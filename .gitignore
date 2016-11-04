@@ -1,0 +1,24 @@
+*.iml
+.gradle
+/local.properties
+/.idea/workspace.xml
+/.idea/libraries
+.DS_Store
+/build
+/captures
+.externalNativeBuild
+
+
+
+
+# see http://stackoverflow.com/questions/16736856/what-should-be-in-my-gitignore-for-an-android-studio-project
+/.idea/tasks.xml
+build/
+Thumbs.db
+bin/
+gen/
+*.class
+*.dex
+*.apk
+*.ap_
+*.log
