@@ -28,7 +28,8 @@ public class CycleLightsThread extends Thread {
 	boolean lastColorMin = true;
 	List<Integer> lightIndices = Arrays.asList(1,2);
 	
-	public CycleLightsThread() {
+	public CycleLightsThread(PHHueSDK hueInstance) {
+		this.hueInstance = hueInstance;
 	}
 	
 	
@@ -43,7 +44,7 @@ public class CycleLightsThread extends Thread {
 			if (isPaused == false) {
 				if (currentDistance < 0) {
 					if (lastColorMin) {
-						colorValue = BRI_MIN + 100;
+						colorValue = BRI_MIN + 50;
 						lastColorMin = false;
 					} else {
 						colorValue = BRI_MIN;
@@ -69,7 +70,7 @@ public class CycleLightsThread extends Thread {
 				setLights(colorValue);
 			}
 			try {
-				int sleepTime = 500;
+				int sleepTime = 2000;
 				Thread.sleep(sleepTime);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
@@ -77,16 +78,17 @@ public class CycleLightsThread extends Thread {
 		}
 	}
 	
-	private void setLights(int ambiLightHue) {
+	private void setLights(int briValue) {
 		PHBridge bridge = hueInstance.getSelectedBridge();
 		
 		PHBridgeResourcesCache cache = bridge.getResourceCache();
 		List<PHLight> lightsList = cache.getAllLights();
 		
 		PHLightState ambiLightState = new PHLightState();
-		ambiLightState.setHue(ambiLightHue);
+		ambiLightState.setHue(HUE_VALUE);
 		ambiLightState.setSaturation(250);
-		ambiLightState.setTransitionTime(100);
+		ambiLightState.setBrightness(briValue);
+		ambiLightState.setTransitionTime(20);
 		lightIndices.forEach(lightIndex -> {
 			bridge.updateLightState(lightsList.get(lightIndex), ambiLightState);	
 		});

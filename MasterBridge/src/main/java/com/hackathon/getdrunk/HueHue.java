@@ -1,16 +1,20 @@
 package com.hackathon.getdrunk;
 
-import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
+import java.util.Random;
 
+import com.philips.lighting.hue.listener.PHLightListener;
 import com.philips.lighting.hue.sdk.PHAccessPoint;
 import com.philips.lighting.hue.sdk.PHBridgeSearchManager;
 import com.philips.lighting.hue.sdk.PHHueSDK;
 import com.philips.lighting.hue.sdk.PHSDKListener;
 import com.philips.lighting.hue.sdk.heartbeat.PHHeartbeatManager;
 import com.philips.lighting.model.PHBridge;
+import com.philips.lighting.model.PHBridgeResource;
 import com.philips.lighting.model.PHBridgeResourcesCache;
 import com.philips.lighting.model.PHGroup;
+import com.philips.lighting.model.PHHueError;
 import com.philips.lighting.model.PHHueParsingError;
 import com.philips.lighting.model.PHLight;
 import com.philips.lighting.model.PHLight.PHLightAlertMode;
@@ -45,6 +49,8 @@ public class HueHue {
 	final int WATERLIGHT_APROACHING_DEHYD = 7137;
 	final int WATERLIGHT_RUNNING = 46593;
 
+	Random rand = new Random();
+	
 	public HueHue() {
 		
 		hueInstance = PHHueSDK.getInstance();
@@ -61,7 +67,8 @@ public class HueHue {
 	}
 	
 	private void startAmbilight() {
-		cycleAmbiLightsThread = new CycleLightsThread();
+		if(!MasterBridge.ENABLE_HUE) return;
+		cycleAmbiLightsThread = new CycleLightsThread(hueInstance);
 		cycleAmbiLightsThread.start();
 	}
 	
@@ -76,11 +83,68 @@ public class HueHue {
 		PHLightState waterLightState = new PHLightState();
 		waterLightState.setHue(hueValue);
 		waterLightState.setSaturation(250);
-		bridge.updateLightState(lightsList.get(0), waterLightState);
+		waterLightState.setBrightness(250);
+		bridge.updateLightState(lightsList.get(0), waterLightState, getLightListener());
+	}
+	
+	private PHLightListener getLightListener() {
+		PHLightListener listener = new PHLightListener() {
+			
+			@Override
+			public void onSuccess() {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void onStateUpdate(Map<String, String> arg0, List<PHHueError> arg1) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void onError(int arg0, String arg1) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void onSearchComplete() {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void onReceivingLights(List<PHBridgeResource> arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void onReceivingLightDetails(PHLight arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+		};
+		
+		return listener;
 	}
 	
 	private void startParty() {
 		if(!MasterBridge.ENABLE_HUE) return;
+		PHBridge bridge = hueInstance.getSelectedBridge();
+		
+		PHBridgeResourcesCache cache = bridge.getResourceCache();
+		List<PHLight> lightsList = cache.getAllLights();
+		
+		PHLightState waterLightState = new PHLightState();
+		
+		for (int i = 0; i < 100; i++) {
+			waterLightState.setHue(rand.nextInt(65530) + 2);
+			waterLightState.setSaturation(250);
+			waterLightState.setBrightness(200);
+			bridge.updateLightState(lightsList.get(0), waterLightState);
+		}
 		
 	}
 
