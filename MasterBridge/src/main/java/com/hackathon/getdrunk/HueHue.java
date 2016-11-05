@@ -121,12 +121,12 @@ public class HueHue {
 		cycleAmbilightsIdle();
 	}
 	
-	public void setLightsCloseNotThirsty() {
+	public void setLightsCloseNotThirsty(double currentDistance) {
 		System.out.println("setLightsApproachingGood()");
 		setLights(WATERLIGHT_APROACHING_GOOD, 0);
 	}
 	
-	public void setLightsCloseDehydrated() {
+	public void setLightsCloseDehydrated(double currentDistance) {
 		System.out.println("setLightsApproachingBad()");
 		setLights(WATERLIGHT_APROACHING_BAD, 0);
 	}
