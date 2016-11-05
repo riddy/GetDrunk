@@ -142,6 +142,9 @@ public class HueHue {
 	
 	private void startParty() {
 		if(!MasterBridge.ENABLE_HUE) return;
+		cycleAmbiLightsThread.startParty();
+		cycleAmbiLightsThread.interrupt();
+		
 		PHBridge bridge = hueInstance.getSelectedBridge();
 		
 		PHBridgeResourcesCache cache = bridge.getResourceCache();
@@ -149,12 +152,19 @@ public class HueHue {
 		
 		PHLightState waterLightState = new PHLightState();
 		
-		for (int i = 0; i < 100; i++) {
+		for (int i = 0; i < 50; i++) {
 			waterLightState.setHue(rand.nextInt(65530) + 2);
 			waterLightState.setSaturation(250);
 			waterLightState.setBrightness(200);
+			waterLightState.setTransitionTime(0);
 			bridge.updateLightState(lightsList.get(0), waterLightState);
+			try {
+				Thread.sleep(10);
+			} catch (InterruptedException e) {
+				
+			}
 		}
+		
 		
 	}
 
@@ -171,18 +181,19 @@ public class HueHue {
 	}
 	
 	public void setLightsCloseNotThirsty() {
-		System.out.println("setLightsApproachingGood()");
+		System.out.println("setLightsCloseNotThirsty()");
 		setWaterLight(WATERLIGHT_APROACHING_NOTTHRISTY);
 	}
 	
 	public void setLightsCloseDehydrated() {
-		System.out.println("setLightsApproachingBad()");
+		System.out.println("setLightsCloseDehydrated()");
 		setWaterLight(WATERLIGHT_APROACHING_DEHYD);
 	}
 	
 	public void setLightsWaterRunning() {
 		System.out.println("setLightsWaterRunning()");
 		setWaterLight(WATERLIGHT_RUNNING);
+		setDistance(0.0);
 	}
 
 	public void setLightsParty() {
@@ -225,6 +236,7 @@ public class HueHue {
 				username = usernameNew;
 				
 				hueInstance.setSelectedBridge(bridge);
+				
 				System.out.println("bridge connected");
 				
 				hueInstance.enableHeartbeat(bridge, PHHueSDK.HB_INTERVAL);
@@ -249,6 +261,7 @@ public class HueHue {
 				
 				//setLightsIdle();
 				startAmbilight();
+//				setLightsParty();
 			}
 			
 			@Override

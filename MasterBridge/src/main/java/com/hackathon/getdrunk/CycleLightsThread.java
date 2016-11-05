@@ -15,7 +15,7 @@ public class CycleLightsThread extends Thread {
 	
 	List<Integer> colorList;
 	PHHueSDK hueInstance;
-	Random random = new Random();
+	Random rand = new Random();
 	
 	int HUE_VALUE = 45281;
 	int SAT_VALUE = 245;
@@ -23,6 +23,7 @@ public class CycleLightsThread extends Thread {
 	int BRI_MAX = 254;
 	
 	boolean isPaused = false;
+	boolean isParty = false;
 	
 	double currentDistance = -1;
 	boolean lastColorMin = true;
@@ -37,9 +38,16 @@ public class CycleLightsThread extends Thread {
 		this.currentDistance = currentDistance;
 	}
 	
+	public void startParty() {
+		System.out.println("set partyyyy");
+		isParty = true;
+		isPaused = true;
+	}
+	
 	@Override
 	public void run() {
 		while (true) {
+			
 			int colorValue;
 			if (isPaused == false) {
 				if (currentDistance < 0) {
@@ -68,14 +76,46 @@ public class CycleLightsThread extends Thread {
 					}
 				}
 				setLights(colorValue);
+				
+				try {
+					int sleepTime = 2000;
+					Thread.sleep(sleepTime);
+				} catch (InterruptedException e) {
+
+				}
+			} else if (isParty) {
+				partyyyyy();
 			}
+			
+		}
+	}
+	
+	private void partyyyyy() {
+		System.out.println("partyyyyy");
+		PHBridge bridge = hueInstance.getSelectedBridge();
+		
+		PHBridgeResourcesCache cache = bridge.getResourceCache();
+		List<PHLight> lightsList = cache.getAllLights();
+		
+		PHLightState waterLightState = new PHLightState();
+		
+		for (int i = 0; i < 50; i++) {
+			waterLightState.setHue(rand.nextInt(65530) + 2);
+			waterLightState.setSaturation(250);
+			waterLightState.setBrightness(200);
+			waterLightState.setTransitionTime(0);
+			lightIndices.forEach(lightIndex -> {
+				bridge.updateLightState(lightsList.get(lightIndex), waterLightState);	
+			});
 			try {
-				int sleepTime = 2000;
-				Thread.sleep(sleepTime);
+				Thread.sleep(10);
 			} catch (InterruptedException e) {
-				e.printStackTrace();
+				
 			}
 		}
+		
+		isParty = false;
+		isPaused = false;
 	}
 	
 	private void setLights(int briValue) {
@@ -94,11 +134,4 @@ public class CycleLightsThread extends Thread {
 		});
 	}
 	
-	public void pause() {
-		isPaused = true;
-	}
-	
-	public void resumeCycle() {
-		isPaused = false;
-	}
 }
