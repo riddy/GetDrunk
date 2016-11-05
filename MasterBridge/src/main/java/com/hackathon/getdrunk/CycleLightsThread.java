@@ -12,12 +12,18 @@ import com.philips.lighting.model.PHLightState;
 
 public class CycleLightsThread extends Thread {
 	
-	ArrayList<Integer> colorList;
+	List<Integer> colorList;
 	PHHueSDK hueInstance;
-	ArrayList<Integer> lightIndices;
+	List<Integer> lightIndices;
 	Random random = new Random();
 	
-	public CycleLightsThread(ArrayList<Integer> colorList, PHHueSDK hueInstance, ArrayList<Integer> lightIndices) {
+	public CycleLightsThread(List<Integer> colorList, PHHueSDK hueInstance, List<Integer> lightIndices) {
+		this.colorList = colorList;
+		this.hueInstance = hueInstance;
+		this.lightIndices = lightIndices;
+	}
+	
+	public void updateParams(List<Integer> colorList, PHHueSDK hueInstance, List<Integer> lightIndices) {
 		this.colorList = colorList;
 		this.hueInstance = hueInstance;
 		this.lightIndices = lightIndices;
@@ -44,6 +50,7 @@ public class CycleLightsThread extends Thread {
 		PHLightState ambiLightState = new PHLightState();
 		ambiLightState.setHue(ambiLightHue);
 		ambiLightState.setSaturation(250);
+		ambiLightState.setTransitionTime(100);
 		lightIndices.forEach(lightIndex -> {
 			bridge.updateLightState(lightsList.get(lightIndex), ambiLightState);	
 		});
