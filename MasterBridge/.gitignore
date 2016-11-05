@@ -1,0 +1,23 @@
+# Backend
+/target
+/results
+dependency-reduced-pom.xml
+.project
+.classpath
+.settings
+testlog.*
+/persistent
+/deploy
+
+# UI
+/web/wizard/vendor
+/web/ui/vendor
+node_modules
+/dist
+
+# Build
+/_build
+/_package
+
+# OSX
+.DS_Store

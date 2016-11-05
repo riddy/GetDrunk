@@ -1,0 +1,8 @@
+{
+  "listeningPortHTTP":"81",
+  "listeningPortHTTPS":"555",
+  "relutionServerURL":"https://iot.relution.io",
+  "relutionServerPort":"8080",
+  "comPort":"COM5",
+  "serialNumber":"A7F453ZT"
+}

@@ -1,0 +1,11 @@
+{
+  "relutionServerURL" : "https://iot.relution.io",
+  "relutionDeviceKey" : "b5d6bb287b9c6426a80b9d80feb5b6a848c59872f775e9a5",
+  "deviceUUID" : "5C24EECB-EBD0-4316-B3B4-C91A8E5FF94D",
+  "pushUUID" : "E6F3BF6A-03A6-4341-82DB-E86BA79C7072",
+  "organizationUUID" : "F6C94B91-1399-420B-ABB7-30AFD2450394",
+  "userUUID" : "C74FC7DC-FBC2-49BC-A58B-E16458A4D785",
+  "siteUUID" : "90C6564B-2F5A-4C1B-A9E8-EC180BA012D3",
+  "adminPassword" : null,
+  "sshTunnelingEnabled" : false
+}

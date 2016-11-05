@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<style>
+	html, body{
+	    margin-top: 0px; 
+	    margin-bottom: 0px; 
+	    margin-left: 0px; 
+	    margin-right: 0px;
+	    padding: 0;
+	    color: black; 
+	    font-size: 10pt; 
+	    font-family: Arial;
+		width:100%;
+		height:100%;
+		overflow: hidden;
+
+	}
+
+	.printarea {
+	    width: 80mm;
+	    height: 25.4mm;
+	    padding:1.27mm;
+		overflow: hidden;
+	}
+	.mytext{
+	    font-size: 9pt;
+	    padding:1.5mm;
+	}
+	.bold {
+		font-weight: 900;
+	}
+	.myheading {
+		display: inline-block;
+	    font-size: 10pt;
+		font-weight: 700;
+		padding-bottom:2pt;
+	}
+	.bluerangeimage{
+		position: absolute;
+	    top: 11mm;
+	    left: 45mm;
+	    width: 33,5mm;
+	    height: 13mm;
+	}
+	</style>
+
+</head>
+<body>
+<div class="printarea">
+	<div class="mytext">
+		<span class="myheading">Relution MeshGateway</span><br/>
+		<span class="bold">Setup: </span><span>%URL%</span></br>
+		<span class="bold">Model: </span><span>%MODEL%</span></br>
+		<span class="bold">Serial: </span><span>%SERIAL%</span></br>
+		<span class="bold">Power: </span><span>5V 2A</span></br>
+	</div>
+	<img src="./bluerange_logo.png" class="bluerangeimage" />
+</div>
+</body>
+</html>
