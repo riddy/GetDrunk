@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+   <item android:id="@+id/glas_00">
+      <bitmap
+         android:gravity="center"
+         android:src="@drawable/glas_00"/>
+   </item>
+   <item android:id="@+id/glas_01">
+      <bitmap
+         android:gravity="center"
+         android:src="@drawable/glas_01"/>
+   </item>
+   <item android:id="@+id/glas_02">
+      <bitmap
+         android:gravity="center"
+         android:src="@drawable/glas_02"/>
+   </item>
+   <item android:id="@+id/glas_03">
+      <bitmap
+         android:gravity="center"
+         android:src="@drawable/glas_03"/>
+   </item>
+   <item android:id="@+id/glas_04">
+      <bitmap
+         android:gravity="center"
+         android:src="@drawable/glas_04"/>
+   </item>
+   <item android:id="@+id/glas_05">
+      <bitmap
+         android:gravity="center"
+         android:src="@drawable/glas_05"/>
+   </item>
+   <item android:id="@+id/glas_06">
+      <bitmap
+         android:gravity="center"
+         android:src="@drawable/glas_06"/>
+   </item>
+   <item android:id="@+id/glas_07">
+      <bitmap
+         android:gravity="center"
+         android:src="@drawable/glas_07"/>
+   </item>
+   <item android:id="@+id/glas_08">
+      <bitmap
+         android:gravity="center"
+         android:src="@drawable/glas_08"/>
+   </item>
+   <item android:id="@+id/glas_09">
+      <bitmap
+         android:gravity="center"
+         android:src="@drawable/glas_09"/>
+   </item>
+   <item android:id="@+id/glas_10">
+      <bitmap
+         android:gravity="center"
+         android:src="@drawable/glas_10"/>
+   </item>
+</layer-list>

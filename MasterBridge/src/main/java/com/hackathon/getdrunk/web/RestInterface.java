@@ -28,9 +28,17 @@ public class RestInterface {
 	public boolean updateCloseby(
 			@PathVariable(name = "deviceID") String deviceID,
 			@RequestBody BluetoothConnection closeby) {
+		
+		User user = Users.getUserById(deviceID);
+		
 		if (!closeby.isIs_close_by()) {
 			System.out.println("User " + deviceID + " is gone.");
 			Main.getMasterBridge().userIsClose = false;
+			
+			user.setIsClose(false);
+			
+			Main.getMasterBridge().hue.setLightsIdle();
+			
 			// FIXME: call light
 			return false;
 		}
@@ -42,6 +50,14 @@ public class RestInterface {
 		
 
 		Main.getMasterBridge().userIsClose = true;
+		user.setIsClose(true);
+		
+		if(user.isDehydrated()){
+			Main.getMasterBridge().hue.setLightsCloseDehydrated();
+		} else {
+			Main.getMasterBridge().hue.setLightsCloseNotThirsty();
+		}
+		
 
 		System.out.print("c");
 //		System.out.println("Received something! " + deviceID

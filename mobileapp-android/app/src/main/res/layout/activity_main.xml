@@ -3,14 +3,44 @@
    android:id="@+id/activity_main"
    xmlns:android="http://schemas.android.com/apk/res/android"
    android:layout_width="match_parent"
-   android:layout_height="match_parent"
-   android:paddingBottom="@dimen/activity_vertical_margin"
-   android:paddingLeft="@dimen/activity_horizontal_margin"
-   android:paddingRight="@dimen/activity_horizontal_margin"
-   android:paddingTop="@dimen/activity_vertical_margin">
+   android:layout_height="match_parent">
 
-   <TextView
+   <ImageView
+      android:id="@+id/glas"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:scaleType="centerCrop"
+      android:src="@drawable/glas_00"/>
+
+   <ViewSwitcher
+      android:id="@+id/eyes"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      android:text="Hello World!"/>
+      android:layout_centerInParent="true"
+      android:inAnimation="@android:anim/fade_in"
+      android:outAnimation="@android:anim/fade_out">
+
+   </ViewSwitcher>
+
+   <ImageView
+      android:id="@+id/eyes1"
+      android:layout_width="80dp"
+      android:layout_height="80dp"
+      android:src="@drawable/augen_1"
+      android:visibility="gone"/>
+
+   <ImageView
+      android:id="@+id/eyes2"
+      android:layout_width="80dp"
+      android:layout_height="80dp"
+      android:src="@drawable/augen_2"
+      android:visibility="gone"/>
+
+   <ImageView
+      android:id="@+id/eyes3"
+      android:layout_width="80dp"
+      android:layout_height="80dp"
+      android:src="@drawable/augen_3"
+      android:visibility="gone"/>
+
 </RelativeLayout>

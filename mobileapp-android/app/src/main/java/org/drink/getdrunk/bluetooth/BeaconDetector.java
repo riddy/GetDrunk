@@ -8,9 +8,11 @@ import org.drink.getdrunk.application.GetDrunkApp;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.mway.bluerange.android.sdk.core.logging.BeaconMessageLogger;
 import com.mway.bluerange.android.sdk.core.scanning.BeaconMessageScanner;
 import com.mway.bluerange.android.sdk.core.scanning.messages.BeaconMessage;
-import com.mway.bluerange.android.sdk.core.scanning.messages.IBeacon;
+import com.mway.bluerange.android.sdk.core.streaming.BeaconMessageStreamNode;
+import com.mway.bluerange.android.sdk.core.streaming.BeaconMessageStreamNodeReceiver;
 import com.mway.bluerange.android.sdk.services.trigger.BeaconTrigger;
 
 import rx.Observable;
@@ -41,10 +43,9 @@ public class BeaconDetector {
       return Observable.<Float> create( subscriber -> {
 
          BeaconTrigger policyTrigger = new BeaconTrigger( scanner, GetDrunkApp.getContext() );
-         List<IBeacon> iBeacons = new ArrayList<>();
-         iBeacons.add( new IBeacon( UUID.fromString( "ca2f81f3-4c67-4f15-9731-eb7204d9d143" ), 1, 1 ) );
-         policyTrigger.addIBeaconTriggers( iBeacons );
-
+         policyTrigger.addIBeaconTrigger( UUID.fromString( "ca2f81f3-4c67-4f15-9731-eb7204d9d143" ), 1, 1 );
+         policyTrigger.addIBeaconTrigger( UUID.fromString( "43d1d90472eb-3197-154f-674c-f3812fca" ), 1, 1 );
+         policyTrigger.addRelutionTagTrigger( 7 );
          policyTrigger.addObserver( new BeaconTrigger.BeaconTriggerObserver() {
             @Override
             public void onBeaconActive( BeaconMessage beaconMessage ) {
@@ -60,6 +61,43 @@ public class BeaconDetector {
             public void onNewDistance( BeaconMessage beaconMessage, float v ) {
                LOG.debug( "onNewDistance {}", v );
                subscriber.onNext( v );
+            }
+         } );
+
+         scanner.addReceiver( new BeaconMessageStreamNodeReceiver() {
+
+            @Override
+            public void onMeshActive( BeaconMessageStreamNode beaconMessageStreamNode ) {
+               LOG.debug( "onMeshActive" );
+            }
+
+            @Override
+            public void onReceivedMessage( BeaconMessageStreamNode beaconMessageStreamNode, BeaconMessage beaconMessage ) {
+               LOG.debug( "onReceivedMessage" );
+            }
+
+            @Override
+            public void onMeshInactive( BeaconMessageStreamNode beaconMessageStreamNode ) {
+               LOG.debug( "onMeshInactive" );
+            }
+         } );
+
+         BeaconMessageLogger logger = new BeaconMessageLogger( scanner, GetDrunkApp.getContext() );
+         logger.addReceiver( new BeaconMessageStreamNodeReceiver() {
+            @Override
+            public void onMeshActive( BeaconMessageStreamNode senderNode ) {
+               LOG.debug( "onMeshActive" );
+            }
+
+            @Override
+            public void onReceivedMessage( BeaconMessageStreamNode senderNode, BeaconMessage
+               message ) {
+               LOG.debug( "onReceivedMessage" );
+            }
+
+            @Override
+            public void onMeshInactive( BeaconMessageStreamNode senderNode ) {
+               LOG.debug( "onMeshInactive" );
             }
          } );
 
