@@ -28,17 +28,9 @@ public class CycleLightsThread extends Thread {
 	boolean lastColorMin = true;
 	List<Integer> lightIndices = Arrays.asList(1,2);
 	
-	public CycleLightsThread(List<Integer> colorList, PHHueSDK hueInstance, List<Integer> lightIndices) {
-//		this.colorList = colorList;
-//		this.hueInstance = hueInstance;
-//		this.lightIndices = lightIndices;
+	public CycleLightsThread() {
 	}
 	
-	public void updateParams(List<Integer> colorList, PHHueSDK hueInstance, List<Integer> lightIndices) {
-//		this.colorList = colorList;
-//		this.hueInstance = hueInstance;
-//		this.lightIndices = lightIndices;
-	}
 	
 	public void setDistance(double currentDistance) {
 		this.currentDistance = currentDistance;
