@@ -1,23 +1,23 @@
 package com.hackathon.getdrunk.model;
 
 public class BluetoothConnection {
-	private int RSSI;
-	private boolean inrange;
+	private int rssi;
+	private boolean is_close_by;
 
-	public int getRSSI() {
-		return RSSI;
+	public int getRssi() {
+		return rssi;
 	}
 
-	public void setRSSI(int rSSI) {
-		RSSI = rSSI;
+	public void setRssi(int rssi) {
+		this.rssi = rssi;
 	}
 
-	public boolean isInrange() {
-		return inrange;
+	public boolean isIs_close_by() {
+		return is_close_by;
 	}
 
-	public void setInrange(boolean inrange) {
-		this.inrange = inrange;
+	public void setIs_close_by(boolean is_close_by) {
+		this.is_close_by = is_close_by;
 	}
 
 }
