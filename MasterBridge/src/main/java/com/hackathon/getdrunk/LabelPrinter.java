@@ -107,6 +107,8 @@ public class LabelPrinter {
 	
 	public void printDocument(String printerName, String printMediaName) throws Exception{
 		
+		if(!MasterBridge.ENABLE_PRINT) return;
+		
 		PDDocument document = null;
 		
 		if(!rendered) throw new Exception("Document has not been rendered");

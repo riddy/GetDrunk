@@ -9,6 +9,8 @@ public class Users {
 	static {
 		//Add users
 		addUser(new User("YWJiOWViZjIyYTNmNGVlYyMxNDc4MzU4NzU2MDAw"));
+		addUser(new User("sdf"));
+		addUser(new User("sdggds"));
 	}
 
 	public static void addUser(User user) {
