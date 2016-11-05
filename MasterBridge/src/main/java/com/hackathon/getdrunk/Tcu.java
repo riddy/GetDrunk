@@ -13,12 +13,6 @@ import com.jcraft.jsch.Session;
 public class Tcu {
 	private JSch jsch;
 	private Session session;
-	
-	private static enum WaterType{
-		COLD,
-		AMBIENT,
-		HOT
-	}
 
 	public final static String READ_VAAR = "/usr/local/bin/tcuclient -c \"var read ";
 	public final static String READ_PARAM = "/usr/local/bin/tcuclient -c \"var read ksip.kopf.parameter.";
@@ -55,9 +49,9 @@ public class Tcu {
 	 * @return
 	 */
 	public String send(String message){
-//		System.out.println(message);
-//		
-//		if(true) return "1";
+		System.out.println("TCU message "+message);
+		
+		if(!MasterBridge.ENABLE_TCU) return "1";
 		
 		try {
 			ChannelExec channel=(ChannelExec) session.openChannel("exec");
@@ -107,18 +101,22 @@ public class Tcu {
 	/**
 	 * Pours a glass of ambient water
 	 */
-	public Boolean pourAmbientWater(){
+	public Boolean pourGlassAmbientWater(){
 		Boolean result = false;
 		result = activateSoftwareControl();
 		result = triggerValve(V_IN, true);
 		result = triggerValve(V_OUT, true);
 		result = triggerValve(V_AMBIENT, true);
 		
+		Main.getMasterBridge().hue.setLightsWaterRunning();
+		
 		try {
 			Thread.sleep(6000);
 		} catch (Exception e){
 			
 		}
+
+		Main.getMasterBridge().hue.setLightsIdle();
 
 		result = triggerValve(V_AMBIENT, false);
 		result = triggerValve(V_OUT, false);

@@ -8,7 +8,7 @@ import com.tinkerforge.IPConnection;
 import com.tinkerforge.NotConnectedException;
 import com.tinkerforge.TimeoutException;
 
-public class DistanceSensor implements DistanceListener {
+public class DistanceTrigger implements DistanceListener {
     private static final String HOST = "localhost";
     private static final int PORT = 4223;
 
@@ -20,11 +20,11 @@ public class DistanceSensor implements DistanceListener {
 	
 	private LinkedBlockingQueue<Integer> measurements = new LinkedBlockingQueue<Integer>();
 	
-	public DistanceSensor() {
+	public DistanceTrigger() {
 		
 	}
     
-    public void registerListener(GlassTriggerListener listener){
+    public void initDistanceTrigger(GlassTriggerListener listener){
     	
     	glassListener = listener;
     	

@@ -40,7 +40,7 @@ public class Webserver extends HttpServlet{
 	HttpConfiguration httpsRedirectionConfig;
 	private ServletContextHandler context;
 	private ObjectMapper om;
-	private Bridge edgeRouter;
+	private MasterBridge edgeRouter;
 
 	public Webserver() {
 		
@@ -119,7 +119,7 @@ public class Webserver extends HttpServlet{
 	private void handleGetRequest(HttpServletRequest request, HttpServletResponse response) 
 			throws Exception {
 		
-		Tcu tcu = Main.getEdgeRouter().tcu;
+		Tcu tcu = Main.getMasterBridge().tcu;
 
 
 		// always set content type to HTML
@@ -153,11 +153,11 @@ public class Webserver extends HttpServlet{
 			
 		} else if (request.getRequestURI().equals("/pour-glass"))
 		{			
-			tcu.pourAmbientWater();
+			tcu.pourGlassAmbientWater();
 			
 		} else if (request.getRequestURI().equals("/pour-glass"))
 		{			
-			tcu.pourAmbientWater();
+			tcu.pourGlassAmbientWater();
 			
 		}
 		else
