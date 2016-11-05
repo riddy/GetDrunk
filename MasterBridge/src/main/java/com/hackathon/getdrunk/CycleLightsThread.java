@@ -15,7 +15,7 @@ public class CycleLightsThread extends Thread {
 	
 	List<Integer> colorList;
 	PHHueSDK hueInstance;
-	Random random = new Random();
+	Random rand = new Random();
 	
 	int HUE_VALUE = 45281;
 	int SAT_VALUE = 245;
@@ -23,6 +23,7 @@ public class CycleLightsThread extends Thread {
 	int BRI_MAX = 254;
 	
 	boolean isPaused = false;
+	boolean isParty = false;
 	
 	double currentDistance = -1;
 	boolean lastColorMin = true;
@@ -35,6 +36,11 @@ public class CycleLightsThread extends Thread {
 	
 	public void setDistance(double currentDistance) {
 		this.currentDistance = currentDistance;
+	}
+	
+	public void startParty() {
+		System.out.println("start partyyyy");
+		isParty = true;
 	}
 	
 	@Override
@@ -68,14 +74,43 @@ public class CycleLightsThread extends Thread {
 					}
 				}
 				setLights(colorValue);
+				
+				try {
+					int sleepTime = 2000;
+					Thread.sleep(sleepTime);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+			} else if (isParty) {
+				partyyyyy();
 			}
+			
+		}
+	}
+	
+	private void partyyyyy() {
+		PHBridge bridge = hueInstance.getSelectedBridge();
+		
+		PHBridgeResourcesCache cache = bridge.getResourceCache();
+		List<PHLight> lightsList = cache.getAllLights();
+		
+		PHLightState waterLightState = new PHLightState();
+		
+		for (int i = 0; i < 100; i++) {
+			waterLightState.setHue(rand.nextInt(65530) + 2);
+			waterLightState.setSaturation(250);
+			waterLightState.setBrightness(200);
+			waterLightState.setTransitionTime(0);
+			bridge.updateLightState(lightsList.get(0), waterLightState);
 			try {
-				int sleepTime = 2000;
-				Thread.sleep(sleepTime);
+				Thread.sleep(10);
 			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
+		
+		isParty = false;
 	}
 	
 	private void setLights(int briValue) {
@@ -94,11 +129,4 @@ public class CycleLightsThread extends Thread {
 		});
 	}
 	
-	public void pause() {
-		isPaused = true;
-	}
-	
-	public void resumeCycle() {
-		isPaused = false;
-	}
 }
