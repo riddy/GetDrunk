@@ -53,9 +53,9 @@ public class RestInterface {
 		user.setIsClose(true);
 		
 		if(user.isDehydrated()){
-			Main.getMasterBridge().hue.setLightsApproachingBad();
+			Main.getMasterBridge().hue.setLightsCloseDehydrated();
 		} else {
-			Main.getMasterBridge().hue.setLightsApproachingGood();
+			Main.getMasterBridge().hue.setLightsCloseNotThirsty();
 		}
 		
 
