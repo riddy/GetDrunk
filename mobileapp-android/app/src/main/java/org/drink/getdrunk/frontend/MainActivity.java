@@ -115,7 +115,6 @@ public class MainActivity extends AppCompatActivity {
                fillGlas( goal.getPercentageReached() / 10 );
             }
          }, throwable -> {
-            Toast.makeText( this, "Backend made a poo poo", Toast.LENGTH_SHORT ).show();
             LOG.debug( "cannot read goals from backend", throwable );
             startPolling(); // restart
          } ) );
