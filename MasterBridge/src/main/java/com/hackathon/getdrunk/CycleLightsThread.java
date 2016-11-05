@@ -17,6 +17,8 @@ public class CycleLightsThread extends Thread {
 	List<Integer> lightIndices;
 	Random random = new Random();
 	
+	boolean isPaused = false;
+	
 	public CycleLightsThread(List<Integer> colorList, PHHueSDK hueInstance, List<Integer> lightIndices) {
 		this.colorList = colorList;
 		this.hueInstance = hueInstance;
@@ -32,9 +34,12 @@ public class CycleLightsThread extends Thread {
 	@Override
 	public void run() {
 		while (true) {
-			setLights(colorList.get(random.nextInt(colorList.size())));
+			if (isPaused == false) {
+				setLights(colorList.get(random.nextInt(colorList.size())));
+			}
 			try {
-				Thread.sleep(5000);
+				int sleepTime = isPaused == true ? 500 : 5000;
+				Thread.sleep(sleepTime);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
@@ -54,5 +59,13 @@ public class CycleLightsThread extends Thread {
 		lightIndices.forEach(lightIndex -> {
 			bridge.updateLightState(lightsList.get(lightIndex), ambiLightState);	
 		});
+	}
+	
+	public void pause() {
+		isPaused = true;
+	}
+	
+	public void resumeCycle() {
+		isPaused = false;
 	}
 }

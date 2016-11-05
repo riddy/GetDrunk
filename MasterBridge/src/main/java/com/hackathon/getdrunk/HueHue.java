@@ -71,7 +71,7 @@ public class HueHue {
 		if (ambiLightHue >= 0) {
 			
 			if (cycleAmbiLights) {
-				cycleAmbiLightsThread.interrupt();
+				cycleAmbiLightsThread.pause();
 				cycleAmbiLights = false;
 			}
 			
@@ -102,13 +102,16 @@ public class HueHue {
 		List<Integer> colors = Arrays.asList(47920, 45920, 8265);
 		List<Integer> lightIndices = Arrays.asList(1,2);
 		if (cycleAmbiLights && cycleAmbiLightsThread != null) {
-			cycleAmbiLightsThread.interrupt();
+			cycleAmbiLightsThread.pause();
 			cycleAmbiLights = false;
 		}
-		
-		cycleAmbiLightsThread = new CycleLightsThread(colors, hueInstance, lightIndices);
+		if (cycleAmbiLightsThread == null) {
+			cycleAmbiLightsThread = new CycleLightsThread(colors, hueInstance, lightIndices);
+		} else {
+			cycleAmbiLightsThread.updateParams(colors, hueInstance, lightIndices);
+		}
 		cycleAmbiLights = true;
-		cycleAmbiLightsThread.start();
+		cycleAmbiLightsThread.resumeCycle();
 	}
 	
 	
