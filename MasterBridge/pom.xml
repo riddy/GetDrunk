@@ -78,43 +78,6 @@
 			<artifactId>fast-classpath-scanner</artifactId>
 			<version>LATEST</version>
 		</dependency>
-		<dependency>
-			<groupId>org.codehaus.preon</groupId>
-			<artifactId>preon-el</artifactId>
-			<version>1.1-SNAPSHOT</version>
-		</dependency>
-		<dependency>
-			<groupId>org.codehaus.preon</groupId>
-			<artifactId>preon-binding</artifactId>
-			<version>1.1-SNAPSHOT</version>
-		</dependency>
-		<dependency>
-			<groupId>org.codehaus.preon</groupId>
-			<artifactId>preon-emitter</artifactId>
-			<version>1.1-SNAPSHOT</version>
-		</dependency>
-		<dependency>
-			<groupId>org.codehaus.preon</groupId>
-			<artifactId>preon-io</artifactId>
-			<version>1.1-SNAPSHOT</version>
-		</dependency>
-		<!-- Dependencies to Javolution from local repo, now deprecated -->
-		<dependency>
-			<groupId>org.javolution</groupId>
-			<artifactId>javolution-core-java</artifactId>
-			<version>6.1</version>
-		</dependency>
-		<!-- Dependencies to SerialPundit from local repo -->
-		<dependency>
-			<groupId>com.serialpundit.serialpundit</groupId>
-			<artifactId>sp-core</artifactId>
-			<version>1.0.4</version>
-		</dependency>
-		<dependency>
-			<groupId>com.serialpundit.serialpundit</groupId>
-			<artifactId>sp-tty</artifactId>
-			<version>1.0.4</version>
-		</dependency>
 		<!-- Remote Dependencies -->
 		<dependency>
 			<groupId>commons-codec</groupId>
