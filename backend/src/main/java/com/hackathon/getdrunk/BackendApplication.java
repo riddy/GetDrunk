@@ -6,6 +6,8 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
 import springfox.documentation.builders.ApiInfoBuilder;
 import springfox.documentation.service.ApiInfo;
@@ -16,17 +18,24 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 @SpringBootApplication
 @EnableWebMvc
 @EnableSwagger2
-public class BackendApplication {
+public class BackendApplication extends WebMvcConfigurerAdapter {
 
 	public static void main(String[] args) {
 		SpringApplication.run(BackendApplication.class, args);
 	}
 
+	@Override
+	public void addResourceHandlers(ResourceHandlerRegistry registry) {
+		if (!registry.hasMappingForPattern("/**")) {
+			registry.addResourceHandler("/**").addResourceLocations(
+					"classpath:/WEB-INF/");
+		}
+	}
+
 	@Bean
 	public Docket newsApi() {
 		return new Docket(DocumentationType.SWAGGER_2).groupName("api")
-				.apiInfo(apiInfo()).select().paths(regex("/api.*"))
-				.build();
+				.apiInfo(apiInfo()).select().paths(regex("/api.*")).build();
 	}
 
 	private ApiInfo apiInfo() {
@@ -41,4 +50,5 @@ public class BackendApplication {
 						"https://github.com/IBM-Bluemix/news-aggregator/blob/master/LICENSE")
 				.version("2.0").build();
 	}
+
 }
