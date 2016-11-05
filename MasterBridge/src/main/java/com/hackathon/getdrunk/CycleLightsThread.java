@@ -39,13 +39,15 @@ public class CycleLightsThread extends Thread {
 	}
 	
 	public void startParty() {
-		System.out.println("start partyyyy");
+		System.out.println("set partyyyy");
 		isParty = true;
+		isPaused = true;
 	}
 	
 	@Override
 	public void run() {
 		while (true) {
+			
 			int colorValue;
 			if (isPaused == false) {
 				if (currentDistance < 0) {
@@ -79,7 +81,7 @@ public class CycleLightsThread extends Thread {
 					int sleepTime = 2000;
 					Thread.sleep(sleepTime);
 				} catch (InterruptedException e) {
-					e.printStackTrace();
+
 				}
 			} else if (isParty) {
 				partyyyyy();
@@ -89,6 +91,7 @@ public class CycleLightsThread extends Thread {
 	}
 	
 	private void partyyyyy() {
+		System.out.println("partyyyyy");
 		PHBridge bridge = hueInstance.getSelectedBridge();
 		
 		PHBridgeResourcesCache cache = bridge.getResourceCache();
@@ -96,21 +99,23 @@ public class CycleLightsThread extends Thread {
 		
 		PHLightState waterLightState = new PHLightState();
 		
-		for (int i = 0; i < 100; i++) {
+		for (int i = 0; i < 50; i++) {
 			waterLightState.setHue(rand.nextInt(65530) + 2);
 			waterLightState.setSaturation(250);
 			waterLightState.setBrightness(200);
 			waterLightState.setTransitionTime(0);
-			bridge.updateLightState(lightsList.get(0), waterLightState);
+			lightIndices.forEach(lightIndex -> {
+				bridge.updateLightState(lightsList.get(lightIndex), waterLightState);	
+			});
 			try {
 				Thread.sleep(10);
 			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				
 			}
 		}
 		
 		isParty = false;
+		isPaused = false;
 	}
 	
 	private void setLights(int briValue) {
