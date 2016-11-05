@@ -117,6 +117,10 @@ public class Tcu {
 		} catch (Exception e){
 			
 		}
+		
+		user.addGlass();
+		
+		//This enables us to leave to water running state
 
 		//Stop Water
 		if(user.getGlasses() == 2){
@@ -126,6 +130,7 @@ public class Tcu {
 			LabelPrinter.printAward("award2");
 			Main.getMasterBridge().ChangeState(State.PARTY, user);
 		} else {
+			Main.getMasterBridge().ChangeState(State.WATER_RUNNING_END, user);
 			Main.getMasterBridge().ChangeState(State.CLOSE_NOT_THIRSTY, user);
 		}
 

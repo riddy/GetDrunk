@@ -27,12 +27,13 @@ public class MasterBridge implements GlassTriggerListener{
 		CLOSE_DEHYDRATED,
 		CLOSE_NOT_THIRSTY,
 		WATER_RUNNING,
+		WATER_RUNNING_END,
 		PARTY
 	}
 	
 
 	public static final Boolean ENABLE_TCU = false;
-	public static final Boolean ENABLE_HUE = true;
+	public static final Boolean ENABLE_HUE = false;
 	public static final Boolean ENABLE_PRINT = false;
 
 	
@@ -70,52 +71,58 @@ public class MasterBridge implements GlassTriggerListener{
 	}
 	
 	public void ChangeState(State newState, User user){
-		
 		if(user == null) user = new User("dummy", "sdf");
 		
 		if(currentState == State.IDLE){
 			if(newState == State.CLOSE_DEHYDRATED){
 				hue.setLightsCloseDehydrated();
 				user.setIsClose(true);
-				currentState = newState;
+				setState(newState);
 			} else if(newState == State.CLOSE_NOT_THIRSTY){
 				hue.setLightsCloseNotThirsty();
 				user.setIsClose(true);
-				currentState = newState;
+				setState(newState);
 			}
 		} else if (currentState == State.CLOSE_DEHYDRATED || currentState == State.CLOSE_NOT_THIRSTY){
 			if(newState == State.IDLE){
 				hue.setLightsIdle();
 				user.setIsClose(false);
-				currentState = newState;
+				setState(newState);
 			} else if (newState == State.WATER_RUNNING){
 				hue.setLightsWaterRunning();
 				user.setIsClose(true);
-				currentState = newState;
+				setState(newState);
 			}
 		} else if (currentState == State.WATER_RUNNING){
-			if(newState == State.CLOSE_NOT_THIRSTY){
-				hue.setLightsCloseNotThirsty();
-				user.setIsClose(true);
-				currentState = newState;
-			} else if(newState == State.IDLE){
-				hue.setLightsIdle();
-				user.setIsClose(false);
-				currentState = newState;
+			if(newState == State.WATER_RUNNING_END){
+				setState(State.WATER_RUNNING_END);
 			} else if (newState == State.PARTY){
 				hue.setLightsParty();
 				user.setIsClose(true);
-				currentState = newState;
+				setState(newState);
+			}
+		} else if( currentState == State.WATER_RUNNING_END){
+			if(newState == State.CLOSE_NOT_THIRSTY){
+				hue.setLightsCloseNotThirsty();
+				user.setIsClose(true);
+				setState(newState);
+			} else if(newState == State.IDLE){
+				hue.setLightsIdle();
+				user.setIsClose(false);
+				setState(newState);
 			}
 		} else if (currentState == State.PARTY){
 			if(newState == State.CLOSE_NOT_THIRSTY){
 				hue.setLightsCloseNotThirsty();
 				user.setIsClose(true);
-				currentState = newState;
+				setState(newState);
 			}
 		}
-		
-		
+	}
+	
+	public void setState(State newState){
+		System.out.println("New State "+newState);
+		currentState = newState;
 	}
 	
 	

@@ -38,6 +38,13 @@ public class RestInterface {
 						
 			Main.getMasterBridge().ChangeState(State.IDLE, user);
 			
+			int rssi = closeby.getRssi() + 80;
+			if(rssi <= 0) rssi = 1;
+			if(rssi >= 30) rssi = 30;
+			double distance = rssi / 30;
+			
+			Main.getMasterBridge().hue.setDistance(distance);
+			
 			// FIXME: call light
 			return false;
 		}
@@ -46,6 +53,8 @@ public class RestInterface {
 		} else {
 			// FIXME: call light dark
 		}*/
+
+		Main.getMasterBridge().currentCloseUser = user;
 		
 		if(user.isDehydrated()){
 			Main.getMasterBridge().ChangeState(State.CLOSE_DEHYDRATED, user);

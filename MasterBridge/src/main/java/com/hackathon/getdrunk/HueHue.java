@@ -59,6 +59,8 @@ public class HueHue {
 	}
 	
 	public void initHueHue() {
+		if(!MasterBridge.ENABLE_HUE) return;
+		
 		System.out.println("initHueHue");
 		hueListener = getHueListener();
 		
@@ -157,6 +159,9 @@ public class HueHue {
 	}
 
 	public void setDistance(double distance) {
+		if(!MasterBridge.ENABLE_HUE) return;
+		
+		System.out.println("Distance is "+distance);
 		cycleAmbiLightsThread.setDistance(distance);
 	}
 	
