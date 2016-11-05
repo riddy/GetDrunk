@@ -105,11 +105,9 @@ public class HueHue {
 			cycleAmbiLightsThread.interrupt();
 			cycleAmbiLights = false;
 		}
-		if (cycleAmbiLightsThread == null) {
-			cycleAmbiLightsThread = new CycleLightsThread(colors, hueInstance, lightIndices);
-		}
+		
+		cycleAmbiLightsThread = new CycleLightsThread(colors, hueInstance, lightIndices);
 		cycleAmbiLights = true;
-		cycleAmbiLightsThread.updateParams(colors, hueInstance, lightIndices);
 		cycleAmbiLightsThread.start();
 	}
 	
