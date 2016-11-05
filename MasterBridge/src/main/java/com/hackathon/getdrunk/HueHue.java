@@ -41,8 +41,8 @@ public class HueHue {
 	final int AMBI_WATER_HUE = 46945;
 	
 	final int WATERLIGHT_IDLE = 48225;
-	final int WATERLIGHT_APROACHING_GOOD = 43137;
-	final int WATERLIGHT_APROACHING_BAD = 7137;
+	final int WATERLIGHT_APROACHING_NOTTHRISTY = 43137;
+	final int WATERLIGHT_APROACHING_DEHYD = 7137;
 	final int WATERLIGHT_RUNNING = 46593;
 
 	public HueHue() {
@@ -58,6 +58,20 @@ public class HueHue {
 		
 		PHBridgeSearchManager sm = (PHBridgeSearchManager) hueInstance.getSDKService(PHHueSDK.SEARCH_BRIDGE);
 		sm.search(true, true);
+	}
+	
+	private void setWaterLight(int hueValue) {
+		if(!MasterBridge.ENABLE_HUE) return;
+		
+		PHBridge bridge = hueInstance.getSelectedBridge();
+		
+		PHBridgeResourcesCache cache = bridge.getResourceCache();
+		List<PHLight> lightsList = cache.getAllLights();
+		
+		PHLightState waterLightState = new PHLightState();
+		waterLightState.setHue(hueValue);
+		waterLightState.setSaturation(250);
+		bridge.updateLightState(lightsList.get(0), waterLightState);
 	}
 	
 	private void setLights(int waterLightHue, int ambiLightHue) {
@@ -98,6 +112,11 @@ public class HueHue {
 		
 	}
 	
+	private void startParty() {
+		if(!MasterBridge.ENABLE_HUE) return;
+		
+	}
+	
 	private void cycleAmbilightsIdle() {
 		List<Integer> colors = Arrays.asList(47920, 45920, 8265);
 		List<Integer> lightIndices = Arrays.asList(1,2);
@@ -114,30 +133,38 @@ public class HueHue {
 		cycleAmbiLightsThread.resumeCycle();
 	}
 	
+	public void setDistance(double distance) {
+		
+	}
 	
 	public void setLightsIdle() {
 		System.out.println("setLightsIdle()");
-		setLights(WATERLIGHT_IDLE, -1);
+		//setLights(WATERLIGHT_IDLE, -1);
+		setWaterLight(WATERLIGHT_IDLE);
 		cycleAmbilightsIdle();
 	}
 	
-	public void setLightsCloseNotThirsty(double currentDistance) {
+	public void setLightsCloseNotThirsty() {
 		System.out.println("setLightsApproachingGood()");
-		setLights(WATERLIGHT_APROACHING_GOOD, 0);
+		setWaterLight(WATERLIGHT_APROACHING_NOTTHRISTY);
+//		setLights(WATERLIGHT_APROACHING_GOOD, 0);
 	}
 	
-	public void setLightsCloseDehydrated(double currentDistance) {
+	public void setLightsCloseDehydrated() {
 		System.out.println("setLightsApproachingBad()");
-		setLights(WATERLIGHT_APROACHING_BAD, 0);
+		setWaterLight(WATERLIGHT_APROACHING_DEHYD);
+//		setLights(WATERLIGHT_APROACHING_DEHYD, 0);
 	}
 	
 	public void setLightsWaterRunning() {
 		System.out.println("setLightsWaterRunning()");
 		setLights(WATERLIGHT_RUNNING, 0);
+		setWaterLight(WATERLIGHT_RUNNING);
 	}
 
 	public void setLightsParty() {
 		System.out.println("setLightsParty()");
+		startParty();
 	}
 	
 	private PHSDKListener getHueListener() {
