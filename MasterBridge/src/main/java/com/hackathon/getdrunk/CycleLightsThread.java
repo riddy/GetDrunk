@@ -1,6 +1,7 @@
 package com.hackathon.getdrunk;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
@@ -14,31 +15,62 @@ public class CycleLightsThread extends Thread {
 	
 	List<Integer> colorList;
 	PHHueSDK hueInstance;
-	List<Integer> lightIndices;
 	Random random = new Random();
+	
+	int HUE_VALUE = 45281;
+	int SAT_VALUE = 245;
+	int BRI_MIN = 5;
+	int BRI_MAX = 254;
 	
 	boolean isPaused = false;
 	
-	public CycleLightsThread(List<Integer> colorList, PHHueSDK hueInstance, List<Integer> lightIndices) {
-		this.colorList = colorList;
+	double currentDistance = -1;
+	boolean lastColorMin = true;
+	List<Integer> lightIndices = Arrays.asList(1,2);
+	
+	public CycleLightsThread(PHHueSDK hueInstance) {
 		this.hueInstance = hueInstance;
-		this.lightIndices = lightIndices;
 	}
 	
-	public void updateParams(List<Integer> colorList, PHHueSDK hueInstance, List<Integer> lightIndices) {
-		this.colorList = colorList;
-		this.hueInstance = hueInstance;
-		this.lightIndices = lightIndices;
+	
+	public void setDistance(double currentDistance) {
+		this.currentDistance = currentDistance;
 	}
 	
 	@Override
 	public void run() {
 		while (true) {
+			int colorValue;
 			if (isPaused == false) {
-				setLights(colorList.get(random.nextInt(colorList.size())));
+				if (currentDistance < 0) {
+					if (lastColorMin) {
+						colorValue = BRI_MIN + 50;
+						lastColorMin = false;
+					} else {
+						colorValue = BRI_MIN;
+						lastColorMin = true;
+					}
+				} else if (currentDistance == 0) {
+					if (lastColorMin) {
+						colorValue = BRI_MAX;
+						lastColorMin = false;
+					} else {
+						colorValue = BRI_MAX - 70;
+						lastColorMin = true;
+					}
+				} else {
+					if (lastColorMin) {
+						colorValue = BRI_MIN + 100 + ((int) (currentDistance * 80)) - 20;
+						lastColorMin = false;
+					} else {
+						colorValue = BRI_MIN + 100 + ((int) (currentDistance * 80)) + 20;
+						lastColorMin = true;
+					}
+				}
+				setLights(colorValue);
 			}
 			try {
-				int sleepTime = isPaused == true ? 500 : 5000;
+				int sleepTime = 2000;
 				Thread.sleep(sleepTime);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
@@ -46,16 +78,17 @@ public class CycleLightsThread extends Thread {
 		}
 	}
 	
-	private void setLights(int ambiLightHue) {
+	private void setLights(int briValue) {
 		PHBridge bridge = hueInstance.getSelectedBridge();
 		
 		PHBridgeResourcesCache cache = bridge.getResourceCache();
 		List<PHLight> lightsList = cache.getAllLights();
 		
 		PHLightState ambiLightState = new PHLightState();
-		ambiLightState.setHue(ambiLightHue);
+		ambiLightState.setHue(HUE_VALUE);
 		ambiLightState.setSaturation(250);
-		ambiLightState.setTransitionTime(100);
+		ambiLightState.setBrightness(briValue);
+		ambiLightState.setTransitionTime(20);
 		lightIndices.forEach(lightIndex -> {
 			bridge.updateLightState(lightsList.get(lightIndex), ambiLightState);	
 		});

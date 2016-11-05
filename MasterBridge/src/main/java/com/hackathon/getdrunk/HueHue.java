@@ -1,16 +1,20 @@
 package com.hackathon.getdrunk;
 
-import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
+import java.util.Random;
 
+import com.philips.lighting.hue.listener.PHLightListener;
 import com.philips.lighting.hue.sdk.PHAccessPoint;
 import com.philips.lighting.hue.sdk.PHBridgeSearchManager;
 import com.philips.lighting.hue.sdk.PHHueSDK;
 import com.philips.lighting.hue.sdk.PHSDKListener;
 import com.philips.lighting.hue.sdk.heartbeat.PHHeartbeatManager;
 import com.philips.lighting.model.PHBridge;
+import com.philips.lighting.model.PHBridgeResource;
 import com.philips.lighting.model.PHBridgeResourcesCache;
 import com.philips.lighting.model.PHGroup;
+import com.philips.lighting.model.PHHueError;
 import com.philips.lighting.model.PHHueParsingError;
 import com.philips.lighting.model.PHLight;
 import com.philips.lighting.model.PHLight.PHLightAlertMode;
@@ -41,10 +45,12 @@ public class HueHue {
 	final int AMBI_WATER_HUE = 46945;
 	
 	final int WATERLIGHT_IDLE = 48225;
-	final int WATERLIGHT_APROACHING_GOOD = 43137;
-	final int WATERLIGHT_APROACHING_BAD = 7137;
+	final int WATERLIGHT_APROACHING_NOTTHRISTY = 43137;
+	final int WATERLIGHT_APROACHING_DEHYD = 7137;
 	final int WATERLIGHT_RUNNING = 46593;
 
+	Random rand = new Random();
+	
 	public HueHue() {
 		
 		hueInstance = PHHueSDK.getInstance();
@@ -60,7 +66,13 @@ public class HueHue {
 		sm.search(true, true);
 	}
 	
-	private void setLights(int waterLightHue, int ambiLightHue) {
+	private void startAmbilight() {
+		if(!MasterBridge.ENABLE_HUE) return;
+		cycleAmbiLightsThread = new CycleLightsThread(hueInstance);
+		cycleAmbiLightsThread.start();
+	}
+	
+	private void setWaterLight(int hueValue) {
 		if(!MasterBridge.ENABLE_HUE) return;
 		
 		PHBridge bridge = hueInstance.getSelectedBridge();
@@ -68,76 +80,101 @@ public class HueHue {
 		PHBridgeResourcesCache cache = bridge.getResourceCache();
 		List<PHLight> lightsList = cache.getAllLights();
 		
-		if (ambiLightHue >= 0) {
+		PHLightState waterLightState = new PHLightState();
+		waterLightState.setHue(hueValue);
+		waterLightState.setSaturation(250);
+		waterLightState.setBrightness(250);
+		bridge.updateLightState(lightsList.get(0), waterLightState, getLightListener());
+	}
+	
+	private PHLightListener getLightListener() {
+		PHLightListener listener = new PHLightListener() {
 			
-			if (cycleAmbiLights) {
-				cycleAmbiLightsThread.pause();
-				cycleAmbiLights = false;
+			@Override
+			public void onSuccess() {
+				// TODO Auto-generated method stub
+				
 			}
 			
-			if (ambiLightHue == 0) {
-				ambiLightHue = lightsList.get(1).getLastKnownLightState().getHue();
+			@Override
+			public void onStateUpdate(Map<String, String> arg0, List<PHHueError> arg1) {
+				// TODO Auto-generated method stub
+				
 			}
 			
-			PHLightState ambiLightState = new PHLightState();
-			ambiLightState.setHue(ambiLightHue);
-			ambiLightState.setSaturation(250);
-			bridge.updateLightState(lightsList.get(1), ambiLightState);
-			bridge.updateLightState(lightsList.get(2), ambiLightState);
-		}
+			@Override
+			public void onError(int arg0, String arg1) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void onSearchComplete() {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void onReceivingLights(List<PHBridgeResource> arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void onReceivingLightDetails(PHLight arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+		};
 		
-		if (waterLightHue >= 0) {
-			if (waterLightHue == 0) {
-				waterLightHue = lightsList.get(0).getLastKnownLightState().getHue();
-			}
-			PHLightState waterLightState = new PHLightState();
-			waterLightState.setHue(waterLightHue);
+		return listener;
+	}
+	
+	private void startParty() {
+		if(!MasterBridge.ENABLE_HUE) return;
+		PHBridge bridge = hueInstance.getSelectedBridge();
+		
+		PHBridgeResourcesCache cache = bridge.getResourceCache();
+		List<PHLight> lightsList = cache.getAllLights();
+		
+		PHLightState waterLightState = new PHLightState();
+		
+		for (int i = 0; i < 100; i++) {
+			waterLightState.setHue(rand.nextInt(65530) + 2);
 			waterLightState.setSaturation(250);
+			waterLightState.setBrightness(200);
 			bridge.updateLightState(lightsList.get(0), waterLightState);
 		}
 		
 	}
-	
-	private void cycleAmbilightsIdle() {
-		List<Integer> colors = Arrays.asList(47920, 45920, 8265);
-		List<Integer> lightIndices = Arrays.asList(1,2);
-		if (cycleAmbiLights && cycleAmbiLightsThread != null) {
-			cycleAmbiLightsThread.pause();
-			cycleAmbiLights = false;
-		}
-		if (cycleAmbiLightsThread == null) {
-			cycleAmbiLightsThread = new CycleLightsThread(colors, hueInstance, lightIndices);
-		} else {
-			cycleAmbiLightsThread.updateParams(colors, hueInstance, lightIndices);
-		}
-		cycleAmbiLights = true;
-		cycleAmbiLightsThread.resumeCycle();
+
+	public void setDistance(double distance) {
+		cycleAmbiLightsThread.setDistance(distance);
 	}
-	
 	
 	public void setLightsIdle() {
 		System.out.println("setLightsIdle()");
-		setLights(WATERLIGHT_IDLE, -1);
-		cycleAmbilightsIdle();
+		setWaterLight(WATERLIGHT_IDLE);
 	}
 	
 	public void setLightsCloseNotThirsty() {
 		System.out.println("setLightsApproachingGood()");
-		setLights(WATERLIGHT_APROACHING_GOOD, 0);
+		setWaterLight(WATERLIGHT_APROACHING_NOTTHRISTY);
 	}
 	
 	public void setLightsCloseDehydrated() {
 		System.out.println("setLightsApproachingBad()");
-		setLights(WATERLIGHT_APROACHING_BAD, 0);
+		setWaterLight(WATERLIGHT_APROACHING_DEHYD);
 	}
 	
 	public void setLightsWaterRunning() {
 		System.out.println("setLightsWaterRunning()");
-		setLights(WATERLIGHT_RUNNING, 0);
+		setWaterLight(WATERLIGHT_RUNNING);
 	}
 
 	public void setLightsParty() {
 		System.out.println("setLightsParty()");
+		startParty();
 	}
 	
 	private PHSDKListener getHueListener() {
@@ -193,7 +230,9 @@ public class HueHue {
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
+				
 				setLightsIdle();
+				startAmbilight();
 			}
 			
 			@Override
