@@ -144,6 +144,7 @@ public class Tcu {
 			String sendResult = send(WRITE_OPTION+port+" "+openInt+EOL);
 			result = sendResult.equals(""+openInt);
 			failCounter++;
+			if(!MasterBridge.ENABLE_TCU) break;
 		}
 		return true;
 	}

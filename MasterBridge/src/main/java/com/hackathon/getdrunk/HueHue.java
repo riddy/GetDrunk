@@ -58,6 +58,8 @@ public class HueHue {
 	}
 	
 	private void cycleLights() {
+		if(!MasterBridge.ENABLE_HUE) return;
+		
 		Random random = new Random();
 		List<Integer> colors = (List<Integer>) Arrays.asList(47920, 45920, 8265);
 		while (cycleAmbiLights) {
@@ -66,6 +68,8 @@ public class HueHue {
 	}
 	
 	private void setLights(int waterLightHue, int ambiLightHue) {
+		if(!MasterBridge.ENABLE_HUE) return;
+		
 		PHBridge bridge = hueInstance.getSelectedBridge();
 		
 		PHBridgeResourcesCache cache = bridge.getResourceCache();

@@ -23,8 +23,9 @@ public class MasterBridge implements GlassTriggerListener{
 	//Global variable if any user is close
 	public Boolean userIsClose = false;
 	
-	
+
 	public static final Boolean ENABLE_TCU = false;
+	public static final Boolean ENABLE_HUE = false;
 
 	
 	public MasterBridge() {
@@ -78,7 +79,7 @@ public class MasterBridge implements GlassTriggerListener{
 			if(System.currentTimeMillis() - lastGlassFillTime > 10 * 1000){
 				if(userIsClose){
 					System.out.println("Filling glass");
-					//tcu.pourAmbientWater();
+					tcu.pourGlassAmbientWater();
 					lastGlassFillTime = System.currentTimeMillis();
 				}
 			}

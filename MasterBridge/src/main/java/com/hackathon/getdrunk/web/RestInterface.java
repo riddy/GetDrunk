@@ -43,8 +43,9 @@ public class RestInterface {
 
 		Main.getMasterBridge().userIsClose = true;
 
-		System.out.println("Received something! " + deviceID
-				+ closeby.isIs_close_by()+ closeby.getRssi());
+		System.out.print("c");
+//		System.out.println("Received something! " + deviceID
+//				+ closeby.isIs_close_by()+ closeby.getRssi());
 		return true;
 	}
 
@@ -52,7 +53,7 @@ public class RestInterface {
 	@RequestMapping(method = RequestMethod.GET, value = "/api")
 	public boolean test() {
 
-		System.out.println("Received something!");
+		System.out.println("API TEST!");
 		return true;
 	}
 	
@@ -74,8 +75,9 @@ public class RestInterface {
 		status.setGoal(user.getGlassesPercent());
 		status.setHydration_alert(user.isDehydrated());
 
-		System.out.println("Return goal! " + status.getGoal()
-				+ status.isHydration_alert());
+		System.out.print("g");
+//		System.out.println("Return goal! " + status.getGoal()
+//				+ status.isHydration_alert());
 		return status;
 	}
 	
