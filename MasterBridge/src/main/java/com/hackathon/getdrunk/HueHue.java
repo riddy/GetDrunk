@@ -1,22 +1,16 @@
 package com.hackathon.getdrunk;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
-import java.util.Random;
 
-import com.philips.lighting.hue.listener.PHLightListener;
 import com.philips.lighting.hue.sdk.PHAccessPoint;
 import com.philips.lighting.hue.sdk.PHBridgeSearchManager;
 import com.philips.lighting.hue.sdk.PHHueSDK;
 import com.philips.lighting.hue.sdk.PHSDKListener;
 import com.philips.lighting.hue.sdk.heartbeat.PHHeartbeatManager;
 import com.philips.lighting.model.PHBridge;
-import com.philips.lighting.model.PHBridgeResource;
 import com.philips.lighting.model.PHBridgeResourcesCache;
 import com.philips.lighting.model.PHGroup;
-import com.philips.lighting.model.PHHueError;
 import com.philips.lighting.model.PHHueParsingError;
 import com.philips.lighting.model.PHLight;
 import com.philips.lighting.model.PHLight.PHLightAlertMode;
