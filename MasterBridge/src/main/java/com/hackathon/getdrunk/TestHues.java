@@ -6,8 +6,6 @@ public class TestHues {
 		
 		HueHue myHueHue = new HueHue();	
 		myHueHue.initHueHue();
-
-		
 	}
 
 }
