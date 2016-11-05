@@ -1,0 +1,33 @@
+<configuration>
+   <property name="LOG_DIR" value="${EXT_DIR:-/sdcard}/Android/data/${PACKAGE_NAME}/files"/>
+
+   <appender name="LOGCAT" class="ch.qos.logback.classic.android.LogcatAppender">
+      <encoder>
+         <pattern>[%thread] %msg%n</pattern>
+      </encoder>
+   </appender>
+
+   <!-- Make sure there is only one FileAppender - see CrashManagerClient -->
+   <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+      <!-- lazy initialization: don't create the file until 1st write -->
+      <lazy>true</lazy>
+
+      <file>${LOG_DIR}/log.txt</file>
+      <encoder>
+         <pattern>%d{HH:mm:ss.SSS} [%thread] %level %logger - %msg%n</pattern>
+      </encoder>
+
+      <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+         <!-- daily rollover period -->
+         <fileNamePattern>${LOG_DIR}/log.%d.txt</fileNamePattern>
+         <!-- keep 7 days' worth of history -->
+         <maxHistory>7</maxHistory>
+      </rollingPolicy>
+   </appender>
+
+   <root level="DEBUG">
+      <appender-ref ref="LOGCAT"/>
+      <appender-ref ref="FILE"/>
+   </root>
+
+</configuration>

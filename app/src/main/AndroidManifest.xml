@@ -2,13 +2,16 @@
 <manifest package="org.drink.getdrunk"
           xmlns:android="http://schemas.android.com/apk/res/android">
 
+   <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+
    <application
+      android:name=".application.GetDrunkApp"
       android:allowBackup="true"
       android:icon="@mipmap/ic_launcher"
       android:label="@string/app_name"
       android:supportsRtl="true"
       android:theme="@style/AppTheme">
-      <activity android:name=".MainActivity_">
+      <activity android:name=".frontend.MainActivity_">
          <intent-filter>
             <action android:name="android.intent.action.MAIN"/>
 
