@@ -33,7 +33,7 @@ public class RestInterface {
 		
 		if (!closeby.isIs_close_by()) {
 			System.out.println("User " + deviceID + " is gone.");
-			Main.getMasterBridge().userIsClose = false;
+			Main.getMasterBridge().currentCloseUser = null;
 			
 			user.setIsClose(false);
 			
@@ -49,7 +49,7 @@ public class RestInterface {
 		}
 		
 
-		Main.getMasterBridge().userIsClose = true;
+		Main.getMasterBridge().currentCloseUser = null;
 		user.setIsClose(true);
 		
 		if(user.isDehydrated()){
@@ -103,21 +103,21 @@ public class RestInterface {
 	@ResponseBody
 	@RequestMapping(method = RequestMethod.GET, value = "/api/test/pour")
 	public boolean pourGlass() {
-		Main.getMasterBridge().tcu.pourGlassAmbientWater();
+		Main.getMasterBridge().tcu.pourGlassAmbientWater(null);
 		return true;
 	}
 	
 	@ResponseBody
 	@RequestMapping(method = RequestMethod.GET, value = "/api/test/print1")
 	public boolean print1() {
-		LabelPrinter.printGlas("award1");
+		LabelPrinter.printAward("award1");
 		return true;
 	}
 	
 	@ResponseBody
 	@RequestMapping(method = RequestMethod.GET, value = "/api/test/print2")
 	public boolean print2() {
-		LabelPrinter.printGlas("award2");
+		LabelPrinter.printAward("award2");
 		return true;
 	}
 	
