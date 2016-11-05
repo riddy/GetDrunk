@@ -59,7 +59,7 @@ public class HueHue {
 	
 	private void cycleLights() {
 		Random random = new Random();
-		ArrayList<Integer> colors = (ArrayList<Integer>) Arrays.asList(47920, 45920, 8265);
+		List<Integer> colors = (List<Integer>) Arrays.asList(47920, 45920, 8265);
 		while (cycleAmbiLights) {
 			setLights(0, colors.get(random.nextInt(colors.size())));
 		}

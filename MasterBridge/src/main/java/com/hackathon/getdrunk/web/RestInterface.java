@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
+import com.hackathon.getdrunk.LabelPrinter;
 import com.hackathon.getdrunk.Main;
 import com.hackathon.getdrunk.model.BluetoothConnection;
 import com.hackathon.getdrunk.model.GoalStatus;
@@ -29,7 +30,7 @@ public class RestInterface {
 			@RequestBody BluetoothConnection closeby) {
 		if (!closeby.isIs_close_by()) {
 			System.out.println("User " + deviceID + " is gone.");
-			Main.getEdgeRouter().userIsClose = false;
+			Main.getMasterBridge().userIsClose = false;
 			// FIXME: call light
 			return false;
 		}
@@ -40,7 +41,7 @@ public class RestInterface {
 		}
 		
 
-		Main.getEdgeRouter().userIsClose = true;
+		Main.getMasterBridge().userIsClose = true;
 
 		System.out.println("Received something! " + deviceID
 				+ closeby.isIs_close_by()+ closeby.getRssi());
@@ -54,6 +55,8 @@ public class RestInterface {
 		System.out.println("Received something!");
 		return true;
 	}
+	
+	
 
 	/**
 	 * Called to retrieve the current goals and if the 
@@ -74,5 +77,35 @@ public class RestInterface {
 		System.out.println("Return goal! " + status.getGoal()
 				+ status.isHydration_alert());
 		return status;
+	}
+	
+	
+	
+	//############################# TEST endpoints
+	@ResponseBody
+	@RequestMapping(method = RequestMethod.GET, value = "/api/test/pour")
+	public boolean pourGlass() {
+		Main.getMasterBridge().tcu.pourGlassAmbientWater();
+		return true;
+	}
+	
+	@ResponseBody
+	@RequestMapping(method = RequestMethod.GET, value = "/api/test/print1")
+	public boolean print1() {
+		LabelPrinter.printGlas("award1");
+		return true;
+	}
+	
+	@ResponseBody
+	@RequestMapping(method = RequestMethod.GET, value = "/api/test/print2")
+	public boolean print2() {
+		LabelPrinter.printGlas("award2");
+		return true;
+	}
+	
+	@ResponseBody
+	@RequestMapping(method = RequestMethod.GET, value = "/api/test/sim")
+	public boolean testSim() {
+		return Main.getMasterBridge().tcu.getSimState().equals("READY");
 	}
 }

@@ -3,10 +3,10 @@ package com.hackathon.getdrunk;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class Bridge implements GlassTriggerListener{
+public class MasterBridge implements GlassTriggerListener{
 	
 	// Constants
-	final static Logger logger = LogManager.getLogger(Bridge.class.getName());
+	final static Logger logger = LogManager.getLogger(MasterBridge.class.getName());
 	public static final String PLATFORM = "EDGEROUTER";
 	public static final String CONFIG_FILE_NAME = "config.json";
 	public static final String HARDWARE_INFO_FILE_NAME = "hardwareinfo.json";
@@ -15,15 +15,20 @@ public class Bridge implements GlassTriggerListener{
 	
 	public Webserver webserver;
 	
-	public Tcu tcu;
+	public Tcu tcu = new Tcu();
+	public HueHue hue = new HueHue();
+	public DistanceTrigger distanceTrigger = new DistanceTrigger();
 	
-	public DistanceSensor sensor = new DistanceSensor();
 	
-	
+	//Global variable if any user is close
 	public Boolean userIsClose = false;
+	
+	
+	public static final Boolean ENABLE_TCU = false;
 
 	
-	public Bridge() {
+	public MasterBridge() {
+		
 	}
 	
 	//TODO: synchronize all lists that are modified to prevent threading errors
@@ -31,45 +36,37 @@ public class Bridge implements GlassTriggerListener{
 	public void start(){
 		
 		//Register IR sensor
-		sensor.registerListener(this);
+		distanceTrigger.initDistanceTrigger(this);
 		
-//		try{
-//			tcu = new Tcu();
-//			
-//			tcu.connect();
-//			
-//			//tcu.send("pwd");
-//		
-//		
-//		} catch(Throwable t){
-//			System.out.println(t);
-//		}
+		//Connect to TCU
+		//connectToTcu();
 		
-		webserver = new Webserver();
-		webserver.start();
+		//Initialize Hue control
+		hue.initHueHue();
+		
+		
+//		webserver = new Webserver();
+//		webserver.start();
 	}
 	
 
-	public Thread shutdown() {
-		Thread shutdownThread = new Thread() {
-			@Override
-			public void run() {
-				stopEdgeRouter();
-			}
-		};
-		shutdownThread.start();
-		return shutdownThread;
+	private void connectToTcu() {
+		try{
+			tcu.connect();
+			
+		} catch(Throwable t){
+			System.out.println(t);
+		}
+		
+		System.out.println("Connected to TCU");
 	}
 	
-	public void stopEdgeRouter() {
-		logger.info("Shutting down...");
-		webserver.shutdown();
-	}
+	
+	//########################################## GLASS FILLING
 	
 	private Boolean glassWasOnStand = false;
 	private double lastGlassFillTime = 0;
 
-	
 	/**
 	 * Checks if a new glass should be filled
 	 */

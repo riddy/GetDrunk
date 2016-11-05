@@ -10,7 +10,7 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 @EnableWebMvc
 public class Main {
 	
-	public static Bridge edgeRouterInstance;
+	public static MasterBridge masterBridgeInstance;
 	
 	public static java.util.logging.Logger fileLogger = java.util.logging.Logger.getLogger("MyLog");  
 
@@ -29,11 +29,11 @@ public class Main {
 	}
 	
 	private void startEdgeRouter() {
-		edgeRouterInstance = new Bridge();
-		edgeRouterInstance.start();
+		masterBridgeInstance = new MasterBridge();
+		masterBridgeInstance.start();
 	}
 	
-	public static Bridge getEdgeRouter(){
-		return edgeRouterInstance;
+	public static MasterBridge getMasterBridge(){
+		return masterBridgeInstance;
 	}
 }
