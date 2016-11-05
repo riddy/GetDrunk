@@ -5,6 +5,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Arrays;
 
+import com.hackathon.getdrunk.MasterBridge.State;
+import com.hackathon.getdrunk.model.User;
 import com.jcraft.jsch.ChannelExec;
 import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.JSchException;
@@ -101,14 +103,14 @@ public class Tcu {
 	/**
 	 * Pours a glass of ambient water
 	 */
-	public Boolean pourGlassAmbientWater(){
+	public Boolean pourGlassAmbientWater(User user){
 		Boolean result = false;
 		result = activateSoftwareControl();
 		result = triggerValve(V_IN, true);
 		result = triggerValve(V_OUT, true);
 		result = triggerValve(V_AMBIENT, true);
 		
-		Main.getMasterBridge().hue.setLightsWaterRunning();
+		Main.getMasterBridge().ChangeState(State.WATER_RUNNING, user);
 		
 		try {
 			Thread.sleep(6000);
@@ -116,7 +118,16 @@ public class Tcu {
 			
 		}
 
-		Main.getMasterBridge().hue.setLightsIdle();
+		//Stop Water
+		if(user.getGlasses() == 2){
+			LabelPrinter.printAward("award1");
+			Main.getMasterBridge().ChangeState(State.PARTY, user);
+		} else if (user.getGlasses() == 4){
+			LabelPrinter.printAward("award2");
+			Main.getMasterBridge().ChangeState(State.PARTY, user);
+		} else {
+			Main.getMasterBridge().ChangeState(State.CLOSE_NOT_THIRSTY, user);
+		}
 
 		result = triggerValve(V_AMBIENT, false);
 		result = triggerValve(V_OUT, false);

@@ -197,7 +197,7 @@ public class LabelPrinter {
 		}
 	}
 	
-	public static void printGlas(String award){
+	public static void printAward(String award){
 		try {
 			LabelPrinter gwLabelPrinter = new LabelPrinter();
 
