@@ -1,4 +1,4 @@
-package com.hackathon.getdrunk;
+package com.hackathon.getdrunk.model;
 
 import java.util.ArrayList;
 
@@ -6,13 +6,13 @@ public class Users {
 	
 	static ArrayList<User> users = new ArrayList<User>();
 	
-	private Users() {
-		
+	static {
+		//Add users
+		addUser(new User("YWJiOWViZjIyYTNmNGVlYyMxNDc4MzU4NzU2MDAw"));
 	}
 
 	public static void addUser(User user) {
-		users.add(new User("YWJiOWViZjIyYTNmNGVlYyMxNDc4MzU4NzU2MDAw"));
-		//users.add(new User(""));
+		users.add(user);
 	}
 
 	public static User getUserById(String userId) {
@@ -22,5 +22,9 @@ public class Users {
 			}
 		}
 		return null;
+	}
+	
+	public static ArrayList<User> getUsers(){
+		return users;
 	}
 }

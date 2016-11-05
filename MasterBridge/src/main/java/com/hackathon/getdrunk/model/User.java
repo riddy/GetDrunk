@@ -1,4 +1,4 @@
-package com.hackathon.getdrunk;
+package com.hackathon.getdrunk.model;
 
 public class User {
 	private String deviceId;

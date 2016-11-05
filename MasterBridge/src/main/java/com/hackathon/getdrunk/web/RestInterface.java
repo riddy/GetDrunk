@@ -1,5 +1,7 @@
 package com.hackathon.getdrunk.web;
 
+import java.util.ArrayList;
+
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -9,10 +11,10 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 import com.hackathon.getdrunk.Main;
-import com.hackathon.getdrunk.User;
-import com.hackathon.getdrunk.Users;
 import com.hackathon.getdrunk.model.BluetoothConnection;
 import com.hackathon.getdrunk.model.GoalStatus;
+import com.hackathon.getdrunk.model.User;
+import com.hackathon.getdrunk.model.Users;
 
 @RestController
 @EnableWebMvc
@@ -53,11 +55,15 @@ public class RestInterface {
 		return true;
 	}
 
+	/**
+	 * Called to retrieve the current goals and if the 
+	 */
 	@ResponseBody
 	@RequestMapping(produces = "application/json", method = RequestMethod.GET, value = "/api/{deviceID}/goals")
 	public GoalStatus getGoalStatus(
 			@PathVariable(name = "deviceID") String deviceID) {
 		
+		ArrayList<User> users = Users.getUsers();
 		
 		User user = Users.getUserById(deviceID);
 
