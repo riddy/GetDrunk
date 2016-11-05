@@ -1,0 +1,5 @@
+---
+applications:
+- name: drink-4-fit
+  memory: 512M
+  path: target/backend-0.0.1-SNAPSHOT.jar
