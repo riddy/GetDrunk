@@ -12,6 +12,7 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 import com.hackathon.getdrunk.LabelPrinter;
 import com.hackathon.getdrunk.Main;
+import com.hackathon.getdrunk.MasterBridge.State;
 import com.hackathon.getdrunk.model.BluetoothConnection;
 import com.hackathon.getdrunk.model.GoalStatus;
 import com.hackathon.getdrunk.model.User;
@@ -33,29 +34,23 @@ public class RestInterface {
 		
 		if (!closeby.isIs_close_by()) {
 			System.out.println("User " + deviceID + " is gone.");
-			Main.getMasterBridge().userIsClose = false;
-			
-			user.setIsClose(false);
-			
-			Main.getMasterBridge().hue.setLightsIdle();
+			Main.getMasterBridge().currentCloseUser = null;
+						
+			Main.getMasterBridge().ChangeState(State.IDLE, user);
 			
 			// FIXME: call light
 			return false;
 		}
-		if (closeby.getRssi()> CLOSE_THRESHOLD) {
+		/*if (closeby.getRssi()> CLOSE_THRESHOLD) {
 			// FIXME: call light bright
 		} else {
 			// FIXME: call light dark
-		}
-		
-
-		Main.getMasterBridge().userIsClose = true;
-		user.setIsClose(true);
+		}*/
 		
 		if(user.isDehydrated()){
-			Main.getMasterBridge().hue.setLightsCloseDehydrated();
+			Main.getMasterBridge().ChangeState(State.CLOSE_DEHYDRATED, user);
 		} else {
-			Main.getMasterBridge().hue.setLightsCloseNotThirsty();
+			Main.getMasterBridge().ChangeState(State.CLOSE_NOT_THIRSTY, user);
 		}
 		
 
@@ -103,21 +98,21 @@ public class RestInterface {
 	@ResponseBody
 	@RequestMapping(method = RequestMethod.GET, value = "/api/test/pour")
 	public boolean pourGlass() {
-		Main.getMasterBridge().tcu.pourGlassAmbientWater();
+		Main.getMasterBridge().tcu.pourGlassAmbientWater(null);
 		return true;
 	}
 	
 	@ResponseBody
 	@RequestMapping(method = RequestMethod.GET, value = "/api/test/print1")
 	public boolean print1() {
-		LabelPrinter.printGlas("award1");
+		LabelPrinter.printAward("award1");
 		return true;
 	}
 	
 	@ResponseBody
 	@RequestMapping(method = RequestMethod.GET, value = "/api/test/print2")
 	public boolean print2() {
-		LabelPrinter.printGlas("award2");
+		LabelPrinter.printAward("award2");
 		return true;
 	}
 	

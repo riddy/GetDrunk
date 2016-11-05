@@ -6,8 +6,10 @@ public class User {
 	private Boolean isClose = false;
 	
 	private double lastGlassTime = 0;
+	private String name;
 	
-	public User(String deviceId) {
+	public User(String name, String deviceId) {
+		this.setName(name);
 		this.deviceId = deviceId;
 		
 	}
@@ -43,5 +45,11 @@ public class User {
 	public void addGlass(){
 		glasses++;
 		lastGlassTime = System.currentTimeMillis();
+	}
+	public String getName() {
+		return name;
+	}
+	public void setName(String name) {
+		this.name = name;
 	}
 }

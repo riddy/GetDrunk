@@ -50,10 +50,12 @@ public class HueHue {
 	final int WATERLIGHT_RUNNING = 46593;
 
 	Random rand = new Random();
+	private Thread mainThread;
 	
 	public HueHue() {
 		
 		hueInstance = PHHueSDK.getInstance();
+		mainThread = Thread.currentThread();
 	}
 	
 	public void initHueHue() {
@@ -64,6 +66,12 @@ public class HueHue {
 		
 		PHBridgeSearchManager sm = (PHBridgeSearchManager) hueInstance.getSDKService(PHHueSDK.SEARCH_BRIDGE);
 		sm.search(true, true);
+		
+		try {
+			mainThread.sleep(10000);
+		} catch(InterruptedException e){
+			
+		}
 	}
 	
 	private void startAmbilight() {
@@ -218,6 +226,7 @@ public class HueHue {
 			@Override
 			public void onBridgeConnected(PHBridge bridge, String usernameNew) {
 				
+				
 				username = usernameNew;
 				
 				hueInstance.setSelectedBridge(bridge);
@@ -242,7 +251,9 @@ public class HueHue {
 					e.printStackTrace();
 				}
 				
-				setLightsIdle();
+				mainThread.interrupt();
+				
+				//setLightsIdle();
 				startAmbilight();
 				setLightsParty();
 			}

@@ -3,6 +3,8 @@ package com.hackathon.getdrunk;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.hackathon.getdrunk.model.User;
+
 public class MasterBridge implements GlassTriggerListener{
 	
 	// Constants
@@ -13,15 +15,20 @@ public class MasterBridge implements GlassTriggerListener{
 	public static final String KEYSTORE_FILE_NAME = "keystore.jks";
 	public static String ENROLLMENT_FILE_NAME = "enrollment.json";
 	
-	public Webserver webserver;
-	
 	public Tcu tcu = new Tcu();
 	public HueHue hue = new HueHue();
 	public DistanceTrigger distanceTrigger = new DistanceTrigger();
 	
+	private State currentState = State.IDLE;
+	public User currentCloseUser = null;
 	
-	//Global variable if any user is close
-	public Boolean userIsClose = false;
+	public enum State{
+		IDLE,
+		CLOSE_DEHYDRATED,
+		CLOSE_NOT_THIRSTY,
+		WATER_RUNNING,
+		PARTY
+	}
 	
 
 	public static final Boolean ENABLE_TCU = false;
@@ -46,9 +53,8 @@ public class MasterBridge implements GlassTriggerListener{
 		//Initialize Hue control
 		hue.initHueHue();
 		
+		hue.setLightsIdle();
 		
-//		webserver = new Webserver();
-//		webserver.start();
 	}
 	
 
@@ -62,6 +68,56 @@ public class MasterBridge implements GlassTriggerListener{
 		
 		System.out.println("Connected to TCU");
 	}
+	
+	public void ChangeState(State newState, User user){
+		
+		if(user == null) user = new User("dummy", "sdf");
+		
+		if(currentState == State.IDLE){
+			if(newState == State.CLOSE_DEHYDRATED){
+				hue.setLightsCloseDehydrated();
+				user.setIsClose(true);
+				currentState = newState;
+			} else if(newState == State.CLOSE_NOT_THIRSTY){
+				hue.setLightsCloseNotThirsty();
+				user.setIsClose(true);
+				currentState = newState;
+			}
+		} else if (currentState == State.CLOSE_DEHYDRATED || currentState == State.CLOSE_NOT_THIRSTY){
+			if(newState == State.IDLE){
+				hue.setLightsIdle();
+				user.setIsClose(false);
+				currentState = newState;
+			} else if (newState == State.WATER_RUNNING){
+				hue.setLightsWaterRunning();
+				user.setIsClose(true);
+				currentState = newState;
+			}
+		} else if (currentState == State.WATER_RUNNING){
+			if(newState == State.CLOSE_NOT_THIRSTY){
+				hue.setLightsCloseNotThirsty();
+				user.setIsClose(true);
+				currentState = newState;
+			} else if(newState == State.IDLE){
+				hue.setLightsIdle();
+				user.setIsClose(false);
+				currentState = newState;
+			} else if (newState == State.PARTY){
+				hue.setLightsParty();
+				user.setIsClose(true);
+				currentState = newState;
+			}
+		} else if (currentState == State.PARTY){
+			if(newState == State.CLOSE_NOT_THIRSTY){
+				hue.setLightsCloseNotThirsty();
+				user.setIsClose(true);
+				currentState = newState;
+			}
+		}
+		
+		
+	}
+	
 	
 	
 	//########################################## GLASS FILLING
@@ -78,9 +134,9 @@ public class MasterBridge implements GlassTriggerListener{
 		if(glassAvailable && !glassWasOnStand){
 			glassWasOnStand = true;
 			if(System.currentTimeMillis() - lastGlassFillTime > 10 * 1000){
-				if(userIsClose){
+				if(currentCloseUser != null){
 					System.out.println("Filling glass");
-					tcu.pourGlassAmbientWater();
+					tcu.pourGlassAmbientWater(currentCloseUser);
 					lastGlassFillTime = System.currentTimeMillis();
 				}
 			}
