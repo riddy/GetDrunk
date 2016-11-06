@@ -39,7 +39,7 @@ public class User {
 		this.isClose = isClose;
 	}
 	public Boolean isDehydrated(){
-		if(System.currentTimeMillis() - lastGlassTime > 60*60 * 1000){
+		if(System.currentTimeMillis() - getLastGlassTime() > 60*60 * 1000){
 			return true;
 		}
 		return false;
@@ -47,12 +47,18 @@ public class User {
 	
 	public void addGlass(){
 		glasses++;
-		lastGlassTime = System.currentTimeMillis();
+		setLastGlassTime(System.currentTimeMillis());
 	}
 	public String getName() {
 		return name;
 	}
 	public void setName(String name) {
 		this.name = name;
+	}
+	public double getLastGlassTime() {
+		return lastGlassTime;
+	}
+	public void setLastGlassTime(double lastGlassTime) {
+		this.lastGlassTime = lastGlassTime;
 	}
 }

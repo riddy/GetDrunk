@@ -8,6 +8,7 @@ import kuusisto.tinysound.TinySound;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.eclipse.jetty.server.HttpChannelState.State;
 
 import com.hackathon.getdrunk.model.User;
 
@@ -36,7 +37,8 @@ public class MasterBridge implements GlassTriggerListener{
 		CLOSE_NOT_THIRSTY,
 		WATER_RUNNING,
 		WATER_RUNNING_END,
-		PARTY
+		PARTY,
+		PARTY_END
 	}
 	
 
@@ -104,25 +106,20 @@ public class MasterBridge implements GlassTriggerListener{
 			if(newState == State.CLOSE_DEHYDRATED){
 				hue.setLightsCloseDehydrated();
 				user.setIsClose(true);
-				desertSound.play(true);
 				setState(newState);
 			} else if(newState == State.CLOSE_NOT_THIRSTY){
 				hue.setLightsCloseNotThirsty();
 				user.setIsClose(true);
-				loungeSound.play(true);
 				setState(newState);
 			}
 		} else if (currentState == State.CLOSE_DEHYDRATED || currentState == State.CLOSE_NOT_THIRSTY){
 			if(newState == State.IDLE){
 				hue.setLightsIdle();
 				user.setIsClose(false);
-				desertSound.stop();
-				loungeSound.stop();
 				setState(newState);
 			} else if (newState == State.WATER_RUNNING){
 				hue.setLightsWaterRunning();
 				user.setIsClose(true);
-				pourSound.play();
 				setState(newState);
 			}
 		} else if (currentState == State.WATER_RUNNING){
@@ -131,7 +128,6 @@ public class MasterBridge implements GlassTriggerListener{
 			} else if (newState == State.PARTY){
 				hue.setLightsParty();
 				user.setIsClose(true);
-				partySound.play();
 				setState(newState);
 			}
 		} else if( currentState == State.WATER_RUNNING_END){
@@ -145,6 +141,10 @@ public class MasterBridge implements GlassTriggerListener{
 				setState(newState);
 			}
 		} else if (currentState == State.PARTY){
+			if(newState == State.PARTY_END){
+				setState(State.PARTY_END);
+			}
+		} else if (currentState == State.PARTY_END){
 			if(newState == State.CLOSE_NOT_THIRSTY){
 				hue.setLightsCloseNotThirsty();
 				user.setIsClose(true);
@@ -156,6 +156,26 @@ public class MasterBridge implements GlassTriggerListener{
 	public void setState(State newState){
 		System.out.println("New State "+newState);
 		currentState = newState;
+		
+		if(newState == State.OFF){
+			desertSound.stop();
+			loungeSound.stop();
+		} else if(newState == State.IDLE){
+			desertSound.stop();
+			loungeSound.stop();
+		} else if(newState == State.CLOSE_DEHYDRATED){
+			desertSound.play(true);
+			loungeSound.stop();
+		} else if(newState == State.CLOSE_NOT_THIRSTY){
+			desertSound.stop();
+			loungeSound.play(true);
+		} else if(newState == State.PARTY){
+			partySound.play();
+			desertSound.stop();
+			loungeSound.stop();
+		} else if(newState == State.WATER_RUNNING){
+			pourSound.play();
+		}
 	}
 	
 	
