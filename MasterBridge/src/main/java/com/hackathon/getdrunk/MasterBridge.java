@@ -41,7 +41,7 @@ public class MasterBridge implements GlassTriggerListener{
 	
 
 	public static final Boolean ENABLE_TCU = false;
-	public static final Boolean ENABLE_HUE = false;
+	public static final Boolean ENABLE_HUE = true;
 	public static final Boolean ENABLE_PRINT = false;
 
 	
