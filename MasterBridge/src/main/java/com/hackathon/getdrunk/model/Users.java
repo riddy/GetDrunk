@@ -11,15 +11,15 @@ public class Users {
 	
 	static {
 		//Add users
-		addUser(new User("Benni", "01725820865"));
-		addUser(new User("Marita", "2"));
 		addUser(new User("Julia", "3"));
+		addUser(new User("Marita", "2"));
+		addUser(new User("Bennjamin", "01725820865"));
 		addUser(new User("Marius", "4"));
 
-		users.get(0).setGlasses(1);
-		users.get(1).setGlasses(2);
+		users.get(0).setGlasses(0);
+		users.get(1).setGlasses(0);
 		users.get(2).setGlasses(3);
-		users.get(3).setGlasses(4);
+		users.get(3).setGlasses(3);
 	}
 
 	public static void addUser(User user) {

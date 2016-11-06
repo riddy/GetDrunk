@@ -24,51 +24,109 @@ public class RestInterface {
 
 	private static final Integer CLOSE_THRESHOLD = -60;
 
+//	@ResponseBody
+//	@RequestMapping(consumes = "application/json", method = RequestMethod.PUT, value = "/api/{deviceID}/closeby")
+//	public boolean updateCloseby(
+//			@PathVariable(name = "deviceID") String deviceID,
+//			@RequestBody BluetoothConnection closeby) {
+//		
+//		User user = Users.getUserById(deviceID);
+//		
+//
+//		float rssi = closeby.getRssi()*1.0f + 80;
+//		if(rssi <= 0) rssi = 1;
+//		if(rssi >= 30) rssi = 30;
+//		double distance = rssi / 30;
+//		
+//		Main.getMasterBridge().hue.setDistance(distance);
+//		
+//		if (!closeby.isIs_close_by()) {
+//			System.out.println("User " + deviceID + " is gone.");
+//			Main.getMasterBridge().currentCloseUser = null;
+//						
+//			Main.getMasterBridge().ChangeState(State.IDLE, user);
+//			
+//			
+//			// FIXME: call light
+//			return false;
+//		}
+//		/*if (closeby.getRssi()> CLOSE_THRESHOLD) {
+//			// FIXME: call light bright
+//		} else {
+//			// FIXME: call light dark
+//		}*/
+//
+//		Main.getMasterBridge().currentCloseUser = user;
+//		
+//		if(user.isDehydrated()){
+//			Main.getMasterBridge().ChangeState(State.CLOSE_DEHYDRATED, user);
+//		} else {
+//			Main.getMasterBridge().ChangeState(State.CLOSE_NOT_THIRSTY, user);
+//		}
+//		
+//
+//		System.out.print("c");
+////		System.out.println("Received something! " + deviceID
+////				+ closeby.isIs_close_by()+ closeby.getRssi());
+//		return true;
+//	}
+	
 	@ResponseBody
-	@RequestMapping(consumes = "application/json", method = RequestMethod.PUT, value = "/api/{deviceID}/closeby")
-	public boolean updateCloseby(
+	@RequestMapping(produces = "application/json",
+					consumes = "application/json",
+					method = RequestMethod.PUT,
+					value = "/api/{deviceID}/closeby")
+	public GoalStatus updateCloseby(
 			@PathVariable(name = "deviceID") String deviceID,
 			@RequestBody BluetoothConnection closeby) {
 		
+		//Fetch user
 		User user = Users.getUserById(deviceID);
 		
-
+		//Calculate a distance
 		float rssi = closeby.getRssi()*1.0f + 80;
 		if(rssi <= 0) rssi = 1;
 		if(rssi >= 30) rssi = 30;
 		double distance = rssi / 30;
-		
 		Main.getMasterBridge().hue.setDistance(distance);
 		
+		//User is not close
 		if (!closeby.isIs_close_by()) {
-			System.out.println("User " + deviceID + " is gone.");
+			System.out.println("User " + user.getName() + " is not close.");
 			Main.getMasterBridge().currentCloseUser = null;
 						
 			Main.getMasterBridge().ChangeState(State.IDLE, user);
-			
-			
-			// FIXME: call light
-			return false;
 		}
+		//User is close
+		else {
+			Main.getMasterBridge().currentCloseUser = user;
+			
+			if(user.isDehydrated()){
+				Main.getMasterBridge().ChangeState(State.CLOSE_DEHYDRATED, user);
+			} else {
+				Main.getMasterBridge().ChangeState(State.CLOSE_NOT_THIRSTY, user);
+			}
+		}
+
+		System.out.print(".");
+		
+		
+		//Deliver the user goal
+		GoalStatus status = new GoalStatus();
+		status.setGoal(user.getGlassesPercent());
+		status.setHydration_alert(user.isDehydrated());
+
+//		System.out.println("Return goal! " + status.getGoal()
+//				+ status.isHydration_alert());
+		return status;
+		
+
+		
 		/*if (closeby.getRssi()> CLOSE_THRESHOLD) {
 			// FIXME: call light bright
 		} else {
 			// FIXME: call light dark
 		}*/
-
-		Main.getMasterBridge().currentCloseUser = user;
-		
-		if(user.isDehydrated()){
-			Main.getMasterBridge().ChangeState(State.CLOSE_DEHYDRATED, user);
-		} else {
-			Main.getMasterBridge().ChangeState(State.CLOSE_NOT_THIRSTY, user);
-		}
-		
-
-		System.out.print("c");
-//		System.out.println("Received something! " + deviceID
-//				+ closeby.isIs_close_by()+ closeby.getRssi());
-		return true;
 	}
 
 	@ResponseBody
@@ -76,6 +134,16 @@ public class RestInterface {
 	public boolean test() {
 
 		System.out.println("API TEST!");
+		return true;
+	}
+	
+
+
+	@ResponseBody
+	@RequestMapping(method = RequestMethod.GET, value = "/api/start")
+	public boolean start() {
+
+		Main.getMasterBridge().setState(State.IDLE);
 		return true;
 	}
 	

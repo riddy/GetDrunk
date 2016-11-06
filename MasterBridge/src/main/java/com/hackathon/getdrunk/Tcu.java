@@ -129,6 +129,8 @@ public class Tcu {
 		result = triggerValve(V_AMBIENT, true);
 		
 		Main.getMasterBridge().ChangeState(State.WATER_RUNNING, user);
+		//Add glass for user
+		user.addGlass();
 		
 		try {
 			Thread.sleep(3000);
@@ -136,7 +138,6 @@ public class Tcu {
 			
 		}
 		
-		user.addGlass();
 		
 		//This enables us to leave to water running state
 

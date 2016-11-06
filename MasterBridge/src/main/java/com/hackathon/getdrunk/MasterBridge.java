@@ -1,5 +1,11 @@
 package com.hackathon.getdrunk;
 
+import java.io.File;
+
+import kuusisto.tinysound.Music;
+import kuusisto.tinysound.Sound;
+import kuusisto.tinysound.TinySound;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -18,11 +24,13 @@ public class MasterBridge implements GlassTriggerListener{
 	public Tcu tcu = new Tcu();
 	public HueHue hue = new HueHue();
 	public DistanceTrigger distanceTrigger = new DistanceTrigger();
+	public TinySound sound = new TinySound();
 	
-	private State currentState = State.IDLE;
+	private State currentState = State.OFF;
 	public User currentCloseUser = null;
 	
 	public enum State{
+		OFF,
 		IDLE,
 		CLOSE_DEHYDRATED,
 		CLOSE_NOT_THIRSTY,
@@ -32,8 +40,8 @@ public class MasterBridge implements GlassTriggerListener{
 	}
 	
 
-	public static final Boolean ENABLE_TCU = true;
-	public static final Boolean ENABLE_HUE = true;
+	public static final Boolean ENABLE_TCU = false;
+	public static final Boolean ENABLE_HUE = false;
 	public static final Boolean ENABLE_PRINT = false;
 
 	
@@ -54,12 +62,24 @@ public class MasterBridge implements GlassTriggerListener{
 		//Initialize Hue control
 		hue.initHueHue();
 		
-		hue.setLightsIdle();
+		TinySound.init();
+		String dir = "C:\\hack\\GetDrunk\\MasterBridge\\sound\\";
+		
+		desertSound = TinySound.loadMusic(new File("sound\\desertAmbient.wav"));
+		loungeSound = TinySound.loadMusic(new File("sound\\lounge.wav"));
+
+		partySound = TinySound.loadSound(new File("sound\\party.wav"));
+		pourSound = TinySound.loadSound(new File("sound\\pourWater.wav"));
+		
+		
+		
 		
 	}
 	
 
 	private void connectToTcu() {
+		if(!MasterBridge.ENABLE_TCU) return;
+		
 		try{
 			tcu.connect();
 			
@@ -73,24 +93,36 @@ public class MasterBridge implements GlassTriggerListener{
 	public void ChangeState(State newState, User user){
 		if(user == null) user = new User("dummy", "sdf");
 		
-		if(currentState == State.IDLE){
+		if(currentState == State.OFF){
+			if(newState == State.IDLE){
+				hue.setLightsIdle();
+				user.setIsClose(false);
+				setState(newState);
+			}
+		}
+		else if(currentState == State.IDLE){
 			if(newState == State.CLOSE_DEHYDRATED){
 				hue.setLightsCloseDehydrated();
 				user.setIsClose(true);
+				desertSound.play(true);
 				setState(newState);
 			} else if(newState == State.CLOSE_NOT_THIRSTY){
 				hue.setLightsCloseNotThirsty();
 				user.setIsClose(true);
+				loungeSound.play(true);
 				setState(newState);
 			}
 		} else if (currentState == State.CLOSE_DEHYDRATED || currentState == State.CLOSE_NOT_THIRSTY){
 			if(newState == State.IDLE){
 				hue.setLightsIdle();
 				user.setIsClose(false);
+				desertSound.stop();
+				loungeSound.stop();
 				setState(newState);
 			} else if (newState == State.WATER_RUNNING){
 				hue.setLightsWaterRunning();
 				user.setIsClose(true);
+				pourSound.play();
 				setState(newState);
 			}
 		} else if (currentState == State.WATER_RUNNING){
@@ -99,6 +131,7 @@ public class MasterBridge implements GlassTriggerListener{
 			} else if (newState == State.PARTY){
 				hue.setLightsParty();
 				user.setIsClose(true);
+				partySound.play();
 				setState(newState);
 			}
 		} else if( currentState == State.WATER_RUNNING_END){
@@ -131,6 +164,10 @@ public class MasterBridge implements GlassTriggerListener{
 	
 	private Boolean glassWasOnStand = false;
 	private double lastGlassFillTime = 0;
+	private Music desertSound;
+	private Music loungeSound;
+	private Sound partySound;
+	private Sound pourSound;
 
 	/**
 	 * Checks if a new glass should be filled
