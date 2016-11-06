@@ -25,6 +25,8 @@ public class CycleLightsThread extends Thread {
 	boolean isPaused = false;
 	boolean isParty = false;
 	
+	boolean lightOn = true;
+	
 	double currentDistance = -1;
 	boolean lastColorMin = true;
 	List<Integer> lightIndices = Arrays.asList(1,2);
@@ -85,6 +87,17 @@ public class CycleLightsThread extends Thread {
 				}
 			} else if (isParty) {
 				partyyyyy();
+			} else if (isPaused == true){
+				if (lightOn == true) {
+					setLights(0);
+					
+				}
+				try {
+					int sleepTime = 1000;
+					Thread.sleep(sleepTime);
+				} catch (InterruptedException e) {
+
+				}
 			}
 			
 		}
@@ -125,13 +138,32 @@ public class CycleLightsThread extends Thread {
 		List<PHLight> lightsList = cache.getAllLights();
 		
 		PHLightState ambiLightState = new PHLightState();
-		ambiLightState.setHue(HUE_VALUE);
-		ambiLightState.setSaturation(250);
-		ambiLightState.setBrightness(briValue);
-		ambiLightState.setTransitionTime(20);
+		if (briValue == 0) {
+			ambiLightState.setOn(false);
+			lightOn = false;
+		} else {
+			ambiLightState.setOn(true);
+			ambiLightState.setHue(HUE_VALUE);
+			ambiLightState.setSaturation(250);
+			ambiLightState.setBrightness(briValue);
+			ambiLightState.setTransitionTime(20);
+			lightOn = true;
+		}
 		lightIndices.forEach(lightIndex -> {
 			bridge.updateLightState(lightsList.get(lightIndex), ambiLightState);	
 		});
+		
 	}
 	
+	public void pauseLights() {
+		isPaused = true;
+	}
+	
+	public void resumeLights() {
+		isPaused = false;
+	}
+	
+	public boolean isPaused() {
+		return isPaused;
+	}
 }

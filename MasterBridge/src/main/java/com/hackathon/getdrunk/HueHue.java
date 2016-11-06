@@ -53,7 +53,6 @@ public class HueHue {
 	private Thread mainThread;
 	
 	public HueHue() {
-		
 		hueInstance = PHHueSDK.getInstance();
 		mainThread = Thread.currentThread();
 	}
@@ -80,6 +79,7 @@ public class HueHue {
 		if(!MasterBridge.ENABLE_HUE) return;
 		cycleAmbiLightsThread = new CycleLightsThread(hueInstance);
 		cycleAmbiLightsThread.start();
+		setLightsOff();
 	}
 	
 	private void setWaterLight(int hueValue) {
@@ -91,9 +91,14 @@ public class HueHue {
 		List<PHLight> lightsList = cache.getAllLights();
 		
 		PHLightState waterLightState = new PHLightState();
-		waterLightState.setHue(hueValue);
-		waterLightState.setSaturation(250);
-		waterLightState.setBrightness(250);
+		if (hueValue == 0) {
+			waterLightState.setOn(false);
+		} else {
+			waterLightState.setOn(true);
+			waterLightState.setHue(hueValue);
+			waterLightState.setSaturation(250);
+			waterLightState.setBrightness(250);
+		}
 		bridge.updateLightState(lightsList.get(0), waterLightState, getLightListener());
 	}
 	
@@ -153,6 +158,7 @@ public class HueHue {
 		PHLightState waterLightState = new PHLightState();
 		
 		for (int i = 0; i < 50; i++) {
+			waterLightState.setOn(true);
 			waterLightState.setHue(rand.nextInt(65530) + 2);
 			waterLightState.setSaturation(250);
 			waterLightState.setBrightness(200);
@@ -164,8 +170,6 @@ public class HueHue {
 				
 			}
 		}
-		
-		
 	}
 
 	public void setDistance(double distance) {
@@ -175,14 +179,29 @@ public class HueHue {
 		cycleAmbiLightsThread.setDistance(distance);
 	}
 	
+	public void setLightsOff() {
+		cycleAmbiLightsThread.pauseLights();
+		cycleAmbiLightsThread.interrupt();
+		setWaterLight(0);
+	}
+	
+	private void resumeAmbilights() {
+		if (cycleAmbiLightsThread.isPaused()) {
+			cycleAmbiLightsThread.resumeLights();
+			cycleAmbiLightsThread.interrupt();
+		}
+	}
+	
 	public void setLightsIdle() {
 		System.out.println("setLightsIdle()");
 		setWaterLight(WATERLIGHT_IDLE);
+		resumeAmbilights();
 	}
 	
 	public void setLightsCloseNotThirsty() {
 		System.out.println("setLightsCloseNotThirsty()");
 		setWaterLight(WATERLIGHT_APROACHING_NOTTHRISTY);
+		resumeAmbilights();
 	}
 	
 	public void setLightsCloseDehydrated() {
@@ -194,6 +213,7 @@ public class HueHue {
 		System.out.println("setLightsWaterRunning()");
 		setWaterLight(WATERLIGHT_RUNNING);
 		setDistance(0.0);
+		resumeAmbilights();
 	}
 
 	public void setLightsParty() {
