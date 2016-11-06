@@ -39,6 +39,7 @@ class DeviceIdGenerator {
          TelephonyManager tMgr = (TelephonyManager) GetDrunkApp.getContext().getSystemService(
             Context.TELEPHONY_SERVICE );
          deviceId = tMgr.getLine1Number();
+         if(deviceId == null) return "default_marita";
       }
       return deviceId;
    }

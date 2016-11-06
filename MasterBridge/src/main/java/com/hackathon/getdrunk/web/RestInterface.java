@@ -22,7 +22,7 @@ import com.hackathon.getdrunk.model.Users;
 @EnableWebMvc
 public class RestInterface {
 
-	private static final Integer CLOSE_THRESHOLD = -60;
+	private static final Integer CLOSE_THRESHOLD = -70;
 
 	@ResponseBody
 	@RequestMapping(consumes = "application/json", method = RequestMethod.PUT, value = "/api/{deviceID}/closeby")
@@ -31,7 +31,7 @@ public class RestInterface {
 			@RequestBody BluetoothConnection closeby) {
 		
 
-		System.out.print("d");
+		System.out.print("d "+closeby.getRssi()+",");
 		
 		User user = Users.getUserById(deviceID);
 		
@@ -43,28 +43,21 @@ public class RestInterface {
 		
 		Main.getMasterBridge().hue.setDistance(distance);
 		
-		if (!closeby.isIs_close_by()) {
+		if (closeby.getRssi() < -75 || closeby.getRssi() == 0) {
 			System.out.println("User " + deviceID + " is gone.");
 			Main.getMasterBridge().currentCloseUser = null;
 						
 			Main.getMasterBridge().ChangeState(State.IDLE, user);
 			
-			
-			// FIXME: call light
 			return false;
-		}
-		/*if (closeby.getRssi()> CLOSE_THRESHOLD) {
-			// FIXME: call light bright
 		} else {
-			// FIXME: call light dark
-		}*/
 
 		Main.getMasterBridge().currentCloseUser = user;
-		
-		if(user.isDehydrated()){
-			Main.getMasterBridge().ChangeState(State.CLOSE_DEHYDRATED, user);
-		} else {
-			Main.getMasterBridge().ChangeState(State.CLOSE_NOT_THIRSTY, user);
+			if(user.isDehydrated()){
+				Main.getMasterBridge().ChangeState(State.CLOSE_DEHYDRATED, user);
+			} else {
+				Main.getMasterBridge().ChangeState(State.CLOSE_NOT_THIRSTY, user);
+			}
 		}
 		
 

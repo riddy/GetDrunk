@@ -216,7 +216,7 @@ public class HueHue {
 		resumeAmbilights();
 	}
 
-	public void setLightsParty() {
+	public void setLightsPartyBlocking() {
 		System.out.println("setLightsParty()");
 		startParty();
 	}

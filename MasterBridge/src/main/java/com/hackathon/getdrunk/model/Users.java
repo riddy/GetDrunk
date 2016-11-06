@@ -12,14 +12,14 @@ public class Users {
 	static {
 		//Add users
 		User benni = new User("Benjamin", "01725820865");
-		User julia = new User("Benjamin", "2");
-		User marita = new User("Benjamin", "1");
+		User julia = new User("Julia", "2");
+		User marita = new User("Marita", "default_marita");
 		User marius = new User("Marius", "4");
 
 		benni.setGlasses(2);
 		//benni.setLastGlassTime(System.currentTimeMillis());
 		julia.setGlasses(0);
-		marita.setGlasses(0);
+		marita.setGlasses(3);
 		marius.setGlasses(3);
 
 		addUser(benni);

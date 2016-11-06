@@ -20,7 +20,7 @@ import rx.subjects.PublishSubject;
 
 public class BleScanner {
    private static final Logger LOG = LoggerFactory.getLogger( BleScanner.class );
-   private static final String BEACON_ADDRESS = "E0:B9:85:A9:2D:4F";
+   private static final String BEACON_ADDRESS = "C0:4E:52:E8:16:45";
    private BluetoothAdapter bluetoothAdapter;
    private BluetoothLeScanner bluetoothLeScanner;
    private final PublishSubject<Integer> subject = PublishSubject.create();

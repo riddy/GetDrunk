@@ -72,10 +72,7 @@ public class MasterBridge implements GlassTriggerListener{
 
 		partySound = TinySound.loadSound(new File("sound\\party.wav"));
 		pourSound = TinySound.loadSound(new File("sound\\pourWater.wav"));
-		
-		
-		
-		
+				
 	}
 	
 
@@ -126,9 +123,10 @@ public class MasterBridge implements GlassTriggerListener{
 			if(newState == State.WATER_RUNNING_END){
 				setState(State.WATER_RUNNING_END);
 			} else if (newState == State.PARTY){
-				hue.setLightsParty();
 				user.setIsClose(true);
 				setState(newState);
+				hue.setLightsPartyBlocking();
+				ChangeState(State.PARTY_END, user);
 			}
 		} else if( currentState == State.WATER_RUNNING_END){
 			if(newState == State.CLOSE_NOT_THIRSTY){
