@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+
+<title>Drink 4 Fit</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<link href="guru.css" rel="stylesheet" media="screen" />
+<script language="javascript" type="text/javascript"
+	src="Chart.bundle.min.js"></script>
+<script language="javascript" type="text/javascript" src="utils.js"></script>
+
+<style>
+canvas {
+	-moz-user-select: none;
+	-webkit-user-select: none;
+	-ms-user-select: none;
+}
+</style>
+</head>
+<body>
+
+	<div style="width: 75%">
+		<canvas id="canvas"></canvas>
+	</div>
+	<script>
+		var barChartData = {
+			labels : [ "January", "February", "March", "April", "May", "June",
+					"July", "August", "September", "October" ],
+
+			datasets : [
+					{
+						label : 'Marius',
+						backgroundColor : window.chartColors.blue,
+						data : [ randomScalingFactor(), randomScalingFactor(),
+								randomScalingFactor(), randomScalingFactor(),
+								randomScalingFactor(), randomScalingFactor(),
+								randomScalingFactor(), randomScalingFactor(),
+								randomScalingFactor(), randomScalingFactor() ]
+					},
+					{
+						label : 'Julia',
+						backgroundColor : window.chartColors.purple,
+						data : [ randomScalingFactor(), randomScalingFactor(),
+								randomScalingFactor(), randomScalingFactor(),
+								randomScalingFactor(), randomScalingFactor(),
+								randomScalingFactor(), randomScalingFactor(),
+								randomScalingFactor(), randomScalingFactor() ]
+					},
+					{
+						label : 'Benjamin',
+						backgroundColor : window.chartColors.orange,
+						data : [ randomScalingFactor(), randomScalingFactor(),
+								randomScalingFactor(), randomScalingFactor(),
+								randomScalingFactor(), randomScalingFactor(),
+								randomScalingFactor(), randomScalingFactor(),
+								randomScalingFactor(), randomScalingFactor() ]
+					},
+					{
+						label : 'Marita',
+						backgroundColor : window.chartColors.green,
+						data : [ randomScalingFactor(), randomScalingFactor(),
+								randomScalingFactor(), randomScalingFactor(),
+								randomScalingFactor(), randomScalingFactor(),
+								randomScalingFactor(), randomScalingFactor(),
+								randomScalingFactor(), randomScalingFactor() ]
+					} ]
+		};
+		window.onload = function() {
+			var ctx = document.getElementById("canvas").getContext("2d");
+			window.myBar = new Chart(ctx, {
+				type : 'bar',
+				data : barChartData,
+				options : {
+					title : {
+						display : true,
+						text : "Water consumption 2016"
+					},
+					tooltips : {   
+						mode : 'index',
+						callbacks : {
+							// Use the footer callback to display the sum of the items showing in the tooltip
+							footer : function(tooltipItems, data) {
+								var sum = 0;
+								tooltipItems
+										.forEach(function(tooltipItem) {
+											sum += data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index];
+										});
+								return 'Sum: ' + sum;
+							},
+						},
+						footerFontStyle : 'normal'
+					},
+					responsive : true,
+					scales : {
+						xAxes : [ {
+							stacked : true,
+						} ],
+						yAxes : [ {
+							stacked : true
+						} ]
+					}
+				}
+			});
+		};
+	</script>
+</body>
+</body>
+</html>
