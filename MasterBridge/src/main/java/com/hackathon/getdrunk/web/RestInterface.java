@@ -32,18 +32,20 @@ public class RestInterface {
 		
 		User user = Users.getUserById(deviceID);
 		
+
+		float rssi = closeby.getRssi()*1.0f + 80;
+		if(rssi <= 0) rssi = 1;
+		if(rssi >= 30) rssi = 30;
+		double distance = rssi / 30;
+		
+		Main.getMasterBridge().hue.setDistance(distance);
+		
 		if (!closeby.isIs_close_by()) {
 			System.out.println("User " + deviceID + " is gone.");
 			Main.getMasterBridge().currentCloseUser = null;
 						
 			Main.getMasterBridge().ChangeState(State.IDLE, user);
 			
-			int rssi = closeby.getRssi() + 80;
-			if(rssi <= 0) rssi = 1;
-			if(rssi >= 30) rssi = 30;
-			double distance = rssi / 30;
-			
-			Main.getMasterBridge().hue.setDistance(distance);
 			
 			// FIXME: call light
 			return false;

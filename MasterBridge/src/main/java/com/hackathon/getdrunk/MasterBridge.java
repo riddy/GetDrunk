@@ -32,8 +32,8 @@ public class MasterBridge implements GlassTriggerListener{
 	}
 	
 
-	public static final Boolean ENABLE_TCU = false;
-	public static final Boolean ENABLE_HUE = false;
+	public static final Boolean ENABLE_TCU = true;
+	public static final Boolean ENABLE_HUE = true;
 	public static final Boolean ENABLE_PRINT = false;
 
 	
@@ -49,7 +49,7 @@ public class MasterBridge implements GlassTriggerListener{
 		distanceTrigger.initDistanceTrigger(this);
 		
 		//Connect to TCU
-		//connectToTcu();
+		connectToTcu();
 		
 		//Initialize Hue control
 		hue.initHueHue();
@@ -67,7 +67,7 @@ public class MasterBridge implements GlassTriggerListener{
 			System.out.println(t);
 		}
 		
-		System.out.println("Connected to TCU");
+		System.out.println("Connected to TCU!");
 	}
 	
 	public void ChangeState(State newState, User user){

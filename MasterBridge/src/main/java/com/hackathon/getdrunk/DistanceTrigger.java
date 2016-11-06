@@ -86,7 +86,7 @@ public class DistanceTrigger implements DistanceListener {
 		
 		meanValue /= measurements.size();
 		
-		System.out.println(meanValue);
+		//System.out.println(meanValue);
 		
 		if(meanValue != 0){
 			if(distance < 200){

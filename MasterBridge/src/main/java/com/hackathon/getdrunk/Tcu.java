@@ -70,6 +70,8 @@ public class Tcu {
 			while((msg=error.readLine())!=null){
 				result += msg;
 			}
+			System.out.println("TCU result "+result);
+			
 			in.close();
 			error.close();
 			channel.disconnect();
@@ -89,15 +91,31 @@ public class Tcu {
 	}
 	
 	public Boolean activateSoftwareControl(){
-		String result = send(WRITE_OPTION+"29 1"+EOL);
-		if(result.equals("1")) return true;
-		else return false;
+		Boolean result = false;
+		int failCounter = 0;
+				
+		while(!result){
+			if(failCounter > 10) return false;
+			String sendResult = send(WRITE_OPTION+"29 1"+EOL);
+			result = sendResult.equals("1");
+			failCounter++;
+			if(!MasterBridge.ENABLE_TCU) break;
+		}
+		return true;
 	}
 	
 	public Boolean disableSoftwareControl(){
-		String result = send(WRITE_OPTION+"29 0"+EOL);
-		if(result.equals("0")) return true;
-		else return false;
+		Boolean result = false;
+		int failCounter = 0;
+				
+		while(!result){
+			if(failCounter > 10) return false;
+			String sendResult = send(WRITE_OPTION+"29 0"+EOL);
+			result = sendResult.equals("0");
+			failCounter++;
+			if(!MasterBridge.ENABLE_TCU) break;
+		}
+		return true;
 	}
 
 	/**
@@ -113,7 +131,7 @@ public class Tcu {
 		Main.getMasterBridge().ChangeState(State.WATER_RUNNING, user);
 		
 		try {
-			Thread.sleep(6000);
+			Thread.sleep(3000);
 		} catch (Exception e){
 			
 		}

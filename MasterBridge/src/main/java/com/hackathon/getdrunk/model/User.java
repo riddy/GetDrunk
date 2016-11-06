@@ -23,8 +23,11 @@ public class User {
 		return glasses;
 	}
 	public int getGlassesPercent(){
-		return 60;
-		//return glasses * 25;
+		//return 60;
+		int percent = glasses * 25;
+		if(percent < 0) percent = 0;
+		if(percent > 100) percent = 100;
+		return percent;
 	}
 	public void setGlasses(int glasses) {
 		this.glasses = glasses;

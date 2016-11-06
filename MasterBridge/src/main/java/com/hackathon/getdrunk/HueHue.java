@@ -70,7 +70,7 @@ public class HueHue {
 		sm.search(true, true);
 		
 		try {
-			mainThread.sleep(10000);
+			Thread.sleep(50*1000);
 		} catch(InterruptedException e){
 			
 		}
