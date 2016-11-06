@@ -11,15 +11,21 @@ public class Users {
 	
 	static {
 		//Add users
-		addUser(new User("Julia", "3"));
-		addUser(new User("Marita", "2"));
-		addUser(new User("Bennjamin", "01725820865"));
-		addUser(new User("Marius", "4"));
+		User benni = new User("Benjamin", "01725820865");
+		User julia = new User("Julia", "2");
+		User marita = new User("Marita", "default_marita");
+		User marius = new User("Marius", "4");
 
-		users.get(0).setGlasses(0);
-		users.get(1).setGlasses(0);
-		users.get(2).setGlasses(3);
-		users.get(3).setGlasses(3);
+		benni.setGlasses(2);
+		//benni.setLastGlassTime(System.currentTimeMillis());
+		julia.setGlasses(0);
+		marita.setGlasses(3);
+		marius.setGlasses(3);
+
+		addUser(benni);
+		addUser(julia);
+		addUser(marita);
+		addUser(marius);
 	}
 
 	public static void addUser(User user) {

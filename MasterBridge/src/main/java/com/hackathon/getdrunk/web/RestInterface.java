@@ -22,112 +22,73 @@ import com.hackathon.getdrunk.model.Users;
 @EnableWebMvc
 public class RestInterface {
 
-	private static final Integer CLOSE_THRESHOLD = -60;
+	private static final Integer CLOSE_THRESHOLD = -70;
 
-//	@ResponseBody
-//	@RequestMapping(consumes = "application/json", method = RequestMethod.PUT, value = "/api/{deviceID}/closeby")
-//	public boolean updateCloseby(
-//			@PathVariable(name = "deviceID") String deviceID,
-//			@RequestBody BluetoothConnection closeby) {
-//		
-//		User user = Users.getUserById(deviceID);
-//		
-//
-//		float rssi = closeby.getRssi()*1.0f + 80;
-//		if(rssi <= 0) rssi = 1;
-//		if(rssi >= 30) rssi = 30;
-//		double distance = rssi / 30;
-//		
-//		Main.getMasterBridge().hue.setDistance(distance);
-//		
-//		if (!closeby.isIs_close_by()) {
-//			System.out.println("User " + deviceID + " is gone.");
-//			Main.getMasterBridge().currentCloseUser = null;
-//						
-//			Main.getMasterBridge().ChangeState(State.IDLE, user);
-//			
-//			
-//			// FIXME: call light
-//			return false;
-//		}
-//		/*if (closeby.getRssi()> CLOSE_THRESHOLD) {
-//			// FIXME: call light bright
-//		} else {
-//			// FIXME: call light dark
-//		}*/
-//
-//		Main.getMasterBridge().currentCloseUser = user;
-//		
-//		if(user.isDehydrated()){
-//			Main.getMasterBridge().ChangeState(State.CLOSE_DEHYDRATED, user);
-//		} else {
-//			Main.getMasterBridge().ChangeState(State.CLOSE_NOT_THIRSTY, user);
-//		}
-//		
-//
-//		System.out.print("c");
-////		System.out.println("Received something! " + deviceID
-////				+ closeby.isIs_close_by()+ closeby.getRssi());
-//		return true;
-//	}
-	
 	@ResponseBody
-	@RequestMapping(produces = "application/json",
-					consumes = "application/json",
-					method = RequestMethod.PUT,
-					value = "/api/{deviceID}/closeby")
-	public GoalStatus updateCloseby(
+	@RequestMapping(consumes = "application/json", method = RequestMethod.PUT, value = "/api/{deviceID}/closeby")
+	public boolean updateCloseby(
 			@PathVariable(name = "deviceID") String deviceID,
 			@RequestBody BluetoothConnection closeby) {
 		
-		//Fetch user
+
+		System.out.print("d "+closeby.getRssi()+",");
+		
 		User user = Users.getUserById(deviceID);
 		
-		//Calculate a distance
+
 		float rssi = closeby.getRssi()*1.0f + 80;
 		if(rssi <= 0) rssi = 1;
 		if(rssi >= 30) rssi = 30;
 		double distance = rssi / 30;
+		
 		Main.getMasterBridge().hue.setDistance(distance);
 		
-		//User is not close
-		if (!closeby.isIs_close_by()) {
-			System.out.println("User " + user.getName() + " is not close.");
+		if (closeby.getRssi() < -75 || closeby.getRssi() == 0) {
+			System.out.println("User " + deviceID + " is gone.");
 			Main.getMasterBridge().currentCloseUser = null;
 						
 			Main.getMasterBridge().ChangeState(State.IDLE, user);
-		}
-		//User is close
-		else {
-			Main.getMasterBridge().currentCloseUser = user;
 			
+			return false;
+		} else {
+
+		Main.getMasterBridge().currentCloseUser = user;
 			if(user.isDehydrated()){
 				Main.getMasterBridge().ChangeState(State.CLOSE_DEHYDRATED, user);
 			} else {
 				Main.getMasterBridge().ChangeState(State.CLOSE_NOT_THIRSTY, user);
 			}
 		}
-
-		System.out.print(".");
-		
-		
-		//Deliver the user goal
-		GoalStatus status = new GoalStatus();
-		status.setGoal(user.getGlassesPercent());
-		status.setHydration_alert(user.isDehydrated());
-
-//		System.out.println("Return goal! " + status.getGoal()
-//				+ status.isHydration_alert());
-		return status;
 		
 
-		
-		/*if (closeby.getRssi()> CLOSE_THRESHOLD) {
-			// FIXME: call light bright
-		} else {
-			// FIXME: call light dark
-		}*/
+		System.out.print("c");
+//		System.out.println("Received something! " + deviceID
+//				+ closeby.isIs_close_by()+ closeby.getRssi());
+		return true;
 	}
+
+
+	/**
+		 * Called to retrieve the current goals and if the 
+		 */
+		@ResponseBody
+		@RequestMapping(produces = "application/json", method = RequestMethod.GET, value = "/api/{deviceID}/goals")
+		public GoalStatus getGoalStatus(
+				@PathVariable(name = "deviceID") String deviceID) {
+			
+			ArrayList<User> users = Users.getUsers();
+			
+			User user = Users.getUserById(deviceID);
+	
+			GoalStatus status = new GoalStatus();
+			status.setGoal(user.getGlassesPercent());
+			status.setHydration_alert(user.isDehydrated());
+	
+			System.out.print("g");
+	//		System.out.println("Return goal! " + status.getGoal()
+	//				+ status.isHydration_alert());
+			return status;
+		}
 
 	@ResponseBody
 	@RequestMapping(method = RequestMethod.GET, value = "/api")
@@ -140,46 +101,61 @@ public class RestInterface {
 
 
 	@ResponseBody
-	@RequestMapping(method = RequestMethod.GET, value = "/api/start")
+	@RequestMapping(method = RequestMethod.GET, value = "/api/test/idle")
 	public boolean start() {
 
 		Main.getMasterBridge().setState(State.IDLE);
 		return true;
 	}
 	
-	
-
-	/**
-	 * Called to retrieve the current goals and if the 
-	 */
 	@ResponseBody
-	@RequestMapping(produces = "application/json", method = RequestMethod.GET, value = "/api/{deviceID}/goals")
-	public GoalStatus getGoalStatus(
-			@PathVariable(name = "deviceID") String deviceID) {
+	@RequestMapping(method = RequestMethod.GET, value = "/api/test/thirsty")
+	public boolean thirsty() {
+		User user;
+		if(Main.getMasterBridge().currentCloseUser == null) user = Users.getUsers().get(0);
+		else user = Main.getMasterBridge().currentCloseUser;
 		
-		ArrayList<User> users = Users.getUsers();
-		
-		User user = Users.getUserById(deviceID);
-
-		GoalStatus status = new GoalStatus();
-		status.setGoal(user.getGlassesPercent());
-		status.setHydration_alert(user.isDehydrated());
-
-		System.out.print("g");
-//		System.out.println("Return goal! " + status.getGoal()
-//				+ status.isHydration_alert());
-		return status;
+		Main.getMasterBridge().ChangeState(State.CLOSE_DEHYDRATED, user);
+		return true;
 	}
+	
+	@ResponseBody
+	@RequestMapping(method = RequestMethod.GET, value = "/api/test/notthirsty")
+	public boolean notthirsty() {
+		User user;
+		if(Main.getMasterBridge().currentCloseUser == null) user = Users.getUsers().get(0);
+		else user = Main.getMasterBridge().currentCloseUser;
+		
+		Main.getMasterBridge().ChangeState(State.CLOSE_NOT_THIRSTY, user);
+		return true;
+	}
+	
+	@ResponseBody
+	@RequestMapping(method = RequestMethod.GET, value = "/api/test/pour")
+	public boolean pour() {
+		User user;
+		if(Main.getMasterBridge().currentCloseUser == null) user = Users.getUsers().get(0);
+		else user = Main.getMasterBridge().currentCloseUser;
+		
+		Main.getMasterBridge().tcu.pourGlassAmbientWater(user);
+		return true;
+	}
+	
+	@ResponseBody
+	@RequestMapping(method = RequestMethod.GET, value = "/api/test/partyend")
+	public boolean partyend() {
+		User user;
+		if(Main.getMasterBridge().currentCloseUser == null) user = Users.getUsers().get(0);
+		else user = Main.getMasterBridge().currentCloseUser;
+		
+		Main.getMasterBridge().ChangeState(State.PARTY_END, user);
+		return true;
+	}
+	
 	
 	
 	
 	//############################# TEST endpoints
-	@ResponseBody
-	@RequestMapping(method = RequestMethod.GET, value = "/api/test/pour")
-	public boolean pourGlass() {
-		Main.getMasterBridge().tcu.pourGlassAmbientWater(null);
-		return true;
-	}
 	
 	@ResponseBody
 	@RequestMapping(method = RequestMethod.GET, value = "/api/test/print1")
@@ -200,4 +176,64 @@ public class RestInterface {
 	public boolean testSim() {
 		return Main.getMasterBridge().tcu.getSimState().equals("READY");
 	}
+	
+	
+	
+//	@ResponseBody
+//	@RequestMapping(produces = "application/json",
+//					consumes = "application/json",
+//					method = RequestMethod.PUT,
+//					value = "/api/{deviceID}/closeby")
+//	public GoalStatus updateCloseby(
+//			@PathVariable(name = "deviceID") String deviceID,
+//			@RequestBody BluetoothConnection closeby) {
+//		
+//		//Fetch user
+//		User user = Users.getUserById(deviceID);
+//		
+//		//Calculate a distance
+//		float rssi = closeby.getRssi()*1.0f + 80;
+//		if(rssi <= 0) rssi = 1;
+//		if(rssi >= 30) rssi = 30;
+//		double distance = rssi / 30;
+//		Main.getMasterBridge().hue.setDistance(distance);
+//		
+//		//User is not close
+//		if (!closeby.isIs_close_by()) {
+//			System.out.println("User " + user.getName() + " is not close.");
+//			Main.getMasterBridge().currentCloseUser = null;
+//						
+//			Main.getMasterBridge().ChangeState(State.IDLE, user);
+//		}
+//		//User is close
+//		else {
+//			Main.getMasterBridge().currentCloseUser = user;
+//			
+//			if(user.isDehydrated()){
+//				Main.getMasterBridge().ChangeState(State.CLOSE_DEHYDRATED, user);
+//			} else {
+//				Main.getMasterBridge().ChangeState(State.CLOSE_NOT_THIRSTY, user);
+//			}
+//		}
+//
+//		System.out.print(".");
+//		
+//		
+//		//Deliver the user goal
+//		GoalStatus status = new GoalStatus();
+//		status.setGoal(user.getGlassesPercent());
+//		status.setHydration_alert(user.isDehydrated());
+//
+////		System.out.println("Return goal! " + status.getGoal()
+////				+ status.isHydration_alert());
+//		return status;
+//		
+//
+//		
+//		/*if (closeby.getRssi()> CLOSE_THRESHOLD) {
+//			// FIXME: call light bright
+//		} else {
+//			// FIXME: call light dark
+//		}*/
+//	}
 }
