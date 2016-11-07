@@ -103,7 +103,7 @@ public class RestInterface {
 	@ResponseBody
 	@RequestMapping(method = RequestMethod.GET, value = "/api/test/idle")
 	public boolean start() {
-
+		Main.getMasterBridge().hue.setLightsIdle();
 		Main.getMasterBridge().setState(State.IDLE);
 		return true;
 	}

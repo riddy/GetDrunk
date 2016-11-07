@@ -140,6 +140,13 @@ public class Tcu {
 		
 		
 		//This enables us to leave to water running state
+		
+
+
+		result = triggerValve(V_AMBIENT, false);
+		result = triggerValve(V_OUT, false);
+		result = triggerValve(V_IN, false);
+		result = disableSoftwareControl();
 
 		//Stop Water
 		if(user.getGlasses() == 2){
@@ -152,11 +159,6 @@ public class Tcu {
 			Main.getMasterBridge().ChangeState(State.WATER_RUNNING_END, user);
 			Main.getMasterBridge().ChangeState(State.CLOSE_NOT_THIRSTY, user);
 		}
-
-		result = triggerValve(V_AMBIENT, false);
-		result = triggerValve(V_OUT, false);
-		result = triggerValve(V_IN, false);
-		result = disableSoftwareControl();
 		
 		return true;
 	}

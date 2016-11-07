@@ -180,45 +180,74 @@ public class HueHue {
 	}
 	
 	public void setLightsOff() {
+		try {
 		cycleAmbiLightsThread.pauseLights();
 		cycleAmbiLightsThread.interrupt();
 		setWaterLight(0);
+		} catch(Exception e){
+			
+		}
 	}
 	
 	private void resumeAmbilights() {
-		if (cycleAmbiLightsThread.isPaused()) {
-			cycleAmbiLightsThread.resumeLights();
-			cycleAmbiLightsThread.interrupt();
+		try {
+			if (cycleAmbiLightsThread.isPaused()) {
+				cycleAmbiLightsThread.resumeLights();
+				cycleAmbiLightsThread.interrupt();
+			}
+		} catch(Exception e){
+			
 		}
 	}
 	
 	public void setLightsIdle() {
+		try {
 		System.out.println("setLightsIdle()");
 		setWaterLight(WATERLIGHT_IDLE);
 		resumeAmbilights();
+		} catch(Exception e){
+			
+		}
 	}
 	
 	public void setLightsCloseNotThirsty() {
+		try {
 		System.out.println("setLightsCloseNotThirsty()");
 		setWaterLight(WATERLIGHT_APROACHING_NOTTHRISTY);
 		resumeAmbilights();
+		} catch(Exception e){
+			
+		}
 	}
 	
 	public void setLightsCloseDehydrated() {
+		try {
 		System.out.println("setLightsCloseDehydrated()");
 		setWaterLight(WATERLIGHT_APROACHING_DEHYD);
+		} catch(Exception e){
+			
+		}
 	}
 	
 	public void setLightsWaterRunning() {
+		try {
 		System.out.println("setLightsWaterRunning()");
 		setWaterLight(WATERLIGHT_RUNNING);
 		setDistance(0.0);
 		resumeAmbilights();
+		} catch(Exception e){
+			
+		}
 	}
 
 	public void setLightsPartyBlocking() {
+		try {
 		System.out.println("setLightsParty()");
 		startParty();
+
+		} catch(Exception e){
+			
+		}
 	}
 	
 	private PHSDKListener getHueListener() {
